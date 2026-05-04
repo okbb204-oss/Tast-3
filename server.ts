@@ -14,6 +14,11 @@ async function startServer() {
   const PORT = 3000;
 
   app.use(express.json());
+  
+  // Health check
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", env: process.env.NODE_ENV });
+  });
 
   // Vite integration
   if (process.env.NODE_ENV !== "production") {

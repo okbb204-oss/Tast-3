@@ -135,7 +135,10 @@
     }
     animation: bounce-x-rtl 1s infinite;
   }
-}
+
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl;
+  }
 
   .dark .glass-card {
     @apply bg-white/5 border-white/10;
@@ -168,3 +171,4 @@
   .animate-pulse-gold {
     animation: pulse 2s infinite;
   }
+}
