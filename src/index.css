@@ -11,6 +11,10 @@
   --color-gold: #C9A84C;
   --color-gold-light: #E8C96D;
   --color-off-white: #F8FAF9;
+  --color-secondary: var(--secondary);
+  --color-background: var(--background);
+  --color-card: var(--card);
+  --color-border: var(--border);
   
   --color-dark-bg: #0A1628;
   --color-dark-card: #112240;
@@ -36,6 +40,14 @@
     --border: #E2E8F0;
     --input: #E2E8F0;
     --ring: #00A86B;
+
+    /* Spacing System (8px grid) */
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 24px;
+    --spacing-lg: 32px;
+    --spacing-xl: 48px;
+    --spacing-xxl: 64px;
   }
 
   .dark {
@@ -43,23 +55,29 @@
     --foreground: #CCD6F6;
     --card: #112240;
     --card-foreground: #CCD6F6;
-    --primary: #00FF87;
-    --primary-foreground: #0A1628;
-    --secondary: #1E3A5F;
+    --primary: #006233; /* Keep primary consistent for brand */
+    --primary-foreground: #FFFFFF;
+    --secondary: #162C4E;
     --secondary-foreground: #00FF87;
     --accent: #D21034;
     --accent-foreground: #FFFFFF;
     --border: #1E3A5F;
     --input: #112240;
-    --ring: #00FF87;
+    --ring: #006233;
   }
 
   body {
-    @apply font-sans antialiased transition-colors duration-500 overflow-x-hidden min-h-screen;
+    @apply font-sans antialiased transition-colors duration-500 overflow-x-hidden min-h-screen leading-[1.9];
     background-color: var(--background);
     color: var(--foreground);
     direction: var(--direction, rtl);
   }
+
+  h1 { @apply text-[2.8rem] font-bold leading-tight mb-4; }
+  h2 { @apply text-[2rem] font-bold leading-tight mb-3; }
+  h3 { @apply text-[1.5rem] font-semibold leading-tight mb-2; }
+  p { @apply text-[1.05rem] font-normal; }
+  small { @apply text-[0.85rem] font-normal; }
 
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight;
@@ -67,13 +85,57 @@
 }
 
 @layer utilities {
-  .theme-transitioning * {
-    @apply transition-all duration-400 ease-in-out;
+  .gold-gradient {
+    @apply bg-gradient-to-r from-[#C9A84C] to-[#E8C96D];
   }
 
-  .glass-card {
-    @apply backdrop-blur-2xl border border-white/20 bg-white/10;
+  .green-gradient {
+    @apply bg-gradient-to-r from-[#006233] to-[#00A86B];
   }
+
+  /* Button System */
+  .btn-primary {
+    @apply bg-green-primary text-white font-bold py-4 px-8 rounded-xl
+    transition-all duration-400 active:scale-[0.95]
+    hover:bg-[#004d26] hover:-translate-y-1 shadow-[0_12px_24px_-8px_rgba(0,98,51,0.5)]
+    flex items-center justify-center gap-2;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-green-primary font-bold py-4 px-8 rounded-xl
+    transition-all duration-400 hover:bg-border active:scale-[0.95]
+    shadow-[0_8px_16px_-4px_rgba(0,0,0,0.1)] flex items-center justify-center gap-2;
+  }
+
+  .btn-danger-retry {
+    @apply border-2 border-red-accent text-red-accent font-bold py-3.5 px-8 rounded-xl
+    transition-all duration-400 hover:bg-red-accent hover:text-white
+    active:scale-[0.95] flex items-center justify-center gap-2 animate-pulse;
+  }
+
+  .btn-gold {
+    @apply bg-gradient-to-r from-[#C9A84C] to-[#E8C96D] text-white font-bold py-4 px-10 rounded-2xl
+    transition-all duration-400 hover:scale-[1.05] hover:-translate-y-1
+    shadow-[0_20px_40px_-10px_rgba(201,168,76,0.4)] flex items-center justify-center gap-2;
+  }
+
+  @keyframes bounce-x {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-5px); }
+  }
+
+  .animate-bounce-x {
+    animation: bounce-x 1s infinite;
+  }
+
+  .rtl .animate-bounce-x {
+    @keyframes bounce-x-rtl {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(5px); }
+    }
+    animation: bounce-x-rtl 1s infinite;
+  }
+}
 
   .dark .glass-card {
     @apply bg-white/5 border-white/10;
@@ -87,14 +149,6 @@
 
   .dark .arabesque-pattern {
     background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l5 15h15l-12 9 5 15-13-10-13 10 5-15-12-9h15z' fill='%2300FF87' fill-opacity='0.03'/%3E%3C/svg%3E");
-  }
-
-  .gold-gradient {
-    @apply bg-gradient-to-r from-[#C9A84C] to-[#E8C96D];
-  }
-
-  .green-gradient {
-    @apply bg-gradient-to-r from-[#006233] to-[#00A86B];
   }
 
   .dark .green-gradient {
@@ -114,4 +168,3 @@
   .animate-pulse-gold {
     animation: pulse 2s infinite;
   }
-}

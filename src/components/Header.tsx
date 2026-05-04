@@ -4,6 +4,7 @@ import { Bell, Moon, Sun, Globe, Menu, X, ChevronDown, CheckCircle2, Award, Zap 
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage, Language } from '../context/LanguageContext';
 import { useProgress } from '../context/ProgressContext';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const Header: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
@@ -12,6 +13,8 @@ export const Header: React.FC = () => {
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const notifications = [
     { id: 1, text: 'لم تكمل درسك اليوم — تابع من حيث توقفت', icon: <Zap size={16} className="text-gold" />, time: '2h ago', unread: true },
@@ -20,7 +23,6 @@ export const Header: React.FC = () => {
   ];
 
   const currentCraftProgress = progress.currentCraftId ? getProgressForCraft(progress.currentCraftId) : 0;
-  const currentCraftName = progress.currentCraftId; // Ideally mapping ID to Name
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[60] bg-white/80 dark:bg-dark-bg/80 backdrop-blur-md border-b border-border shadow-sm">
@@ -29,9 +31,10 @@ export const Header: React.FC = () => {
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => navigate('/')}
+          className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="w-12 h-12 green-gradient rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-lg border-2 border-white/20">
+          <div className="w-12 h-12 green-gradient rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-lg border-2 border-white/20 group-hover:scale-110 transition-transform">
             🇩🇿
           </div>
           <div className="hidden sm:block">
@@ -43,14 +46,14 @@ export const Header: React.FC = () => {
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-8">
           {['home', 'crafts', 'about', 'contact'].map((item) => (
-            <a 
+            <button 
               key={item}
-              href={`#${item}`} 
-              className="font-semibold text-sm hover:text-green-primary transition-colors relative group"
+              onClick={() => navigate(item === 'home' ? '/' : `/#${item}`)}
+              className={`font-semibold text-sm hover:text-green-primary transition-colors relative group ${location.pathname === '/' ? 'text-foreground' : 'text-foreground/60'}`}
             >
               {t(`nav.${item}`)}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-primary transition-all group-hover:w-full" />
-            </a>
+            </button>
           ))}
         </nav>
 
@@ -72,7 +75,7 @@ export const Header: React.FC = () => {
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className={`absolute top-full mt-4 ${dir === 'rtl' ? 'left-0' : 'right-0'} w-[300px] glass-card rounded-2xl shadow-2xl p-2 overflow-hidden`}
+                  className={`absolute top-full mt-4 ${dir === 'rtl' ? 'left-0' : 'right-0'} w-[300px] bg-card border border-border rounded-2xl shadow-2xl p-2 overflow-hidden`}
                 >
                   <div className="p-3 border-b border-border flex justify-between items-center">
                     <span className="font-bold text-sm">{t('notif.title')}</span>
@@ -111,7 +114,7 @@ export const Header: React.FC = () => {
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className={`absolute top-full mt-4 ${dir === 'rtl' ? 'left-0' : 'right-0'} w-40 glass-card rounded-2xl shadow-2xl p-2 overflow-hidden`}
+                  className={`absolute top-full mt-4 ${dir === 'rtl' ? 'left-0' : 'right-0'} w-40 bg-card border border-border rounded-2xl shadow-2xl p-2 overflow-hidden`}
                 >
                   {[
                     { code: 'ar', name: 'العربية', flag: '🇩🇿' },
@@ -141,10 +144,10 @@ export const Header: React.FC = () => {
           {/* Theme Toggle */}
           <button 
             onClick={toggleTheme}
-            className="w-16 h-8 bg-black/5 dark:bg-white/10 rounded-full p-1 relative transition-colors overflow-hidden"
+            className="w-14 sm:w-16 h-8 bg-black/5 dark:bg-white/10 rounded-full p-1 relative transition-colors"
           >
             <motion.div 
-              animate={{ x: theme === 'light' ? 0 : 32 }}
+              animate={{ x: theme === 'light' ? 0 : (dir === 'rtl' ? -32 : 32) }}
               className="w-6 h-6 rounded-full bg-white dark:bg-dark-accent shadow-md flex items-center justify-center"
             >
               {theme === 'light' ? <Sun size={14} className="text-gold" /> : <Moon size={14} className="text-dark-bg" />}
@@ -162,21 +165,20 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Progress Bar */}
-      <div className="h-2 w-full bg-black/5 dark:bg-white/5 relative overflow-hidden group">
+      <div className="h-1.5 w-full bg-black/5 dark:bg-white/5 relative overflow-hidden group cursor-help">
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: `${currentCraftProgress}%` }}
-          transition={{ duration: 1, ease: 'easeOut' }}
-          className="h-full green-gradient relative"
+          transition={{ duration: 1.5, ease: 'easeInOut' }}
+          className="h-full green-gradient relative shine-effect"
         >
-          {theme === 'dark' && <div className="absolute inset-0 neon-glow" />}
-          <div className="absolute right-0 top-0 bottom-0 w-20 bg-white/20 skew-x-[-20deg]" />
+          <div className="absolute inset-0 bg-white/20 animate-pulse" />
         </motion.div>
         
         {progress.currentCraftId && (
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-            <span className="text-[10px] font-bold text-white shadow-sm">
-              {currentCraftName} — {currentCraftProgress}% {t('progress.completed')}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+            <span className="text-[10px] font-black text-green-primary bg-white/90 dark:bg-dark-card/90 px-3 py-0.5 rounded-full shadow-2xl border border-green-primary/20">
+              {progress.currentCraftId.replace(/_/g, ' ').toUpperCase()} — {currentCraftProgress}% مكتمل
             </span>
           </div>
         )}
@@ -193,14 +195,16 @@ export const Header: React.FC = () => {
           >
             <div className="p-4 space-y-4">
               {['home', 'crafts', 'about', 'contact'].map((item) => (
-                <a 
+                <button 
                   key={item}
-                  href={`#${item}`} 
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block font-bold py-2 border-b border-border last:border-0"
+                  onClick={() => {
+                    navigate(item === 'home' ? '/' : `/#${item}`);
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-right font-bold py-3 border-b border-border last:border-0 hover:text-green-primary transition-colors"
                 >
                   {t(`nav.${item}`)}
-                </a>
+                </button>
               ))}
             </div>
           </motion.div>
