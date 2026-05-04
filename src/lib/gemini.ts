@@ -1,7 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { LevelData } from "../data/craftsData";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : '');
+const ai = new GoogleGenAI({ apiKey: apiKey || "" });
 
 export async function generateLevelWithAI(craftName: string, levelNum: number, currentProgress?: {correct: number, wrong: number}): Promise<LevelData & {careerRecommendation: string}> {
   const progressContext = currentProgress ? `Learner Stats: ${currentProgress.correct} correct, ${currentProgress.wrong} wrong. If they are excelling, push them with advanced terminology. If struggling, provide more foundational analogies.` : 'First time learner for this craft.';

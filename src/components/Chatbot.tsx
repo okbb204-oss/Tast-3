@@ -4,7 +4,8 @@ import { MessageSquare, X, Send, Bot, User, Sparkles } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { GoogleGenAI } from '@google/genai';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : '');
+const ai = new GoogleGenAI({ apiKey: apiKey || "" });
 
 interface Message {
   id: string;
