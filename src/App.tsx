@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 import { ThemeProvider } from './context/ThemeContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { ProgressProvider } from './context/ProgressContext';
+import { GameProvider } from './contexts/GameContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { CraftGrid } from './components/CraftGrid';
@@ -14,6 +15,7 @@ import { CraftView } from './views/CraftView';
 import { LevelView } from './views/LevelView';
 import { LessonView } from './views/LessonView';
 import { QuizView } from './views/QuizView';
+import PersonalityExperience from './pages/PersonalityExperience';
 import { motion, AnimatePresence } from 'motion/react';
 import { WifiOff } from 'lucide-react';
 
@@ -80,9 +82,10 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <main>
+      <main className="pb-20">
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/personality-test" element={<PersonalityExperience />} />
           <Route path="/craft/:craftId" element={<CraftView />} />
           <Route path="/craft/:craftId/level/:levelId" element={<LevelView />} />
           <Route path="/craft/:craftId/level/:levelId/lesson/:lessonId" element={<LessonView />} />
@@ -137,7 +140,6 @@ const AppContent: React.FC = () => {
       </footer>
 
       <Onboarding />
-      <Chatbot />
     </div>
   );
 };
@@ -147,9 +149,11 @@ export const App: React.FC = () => {
     <ThemeProvider>
       <LanguageProvider>
         <ProgressProvider>
-          <Router>
-            <AppContent />
-          </Router>
+          <GameProvider>
+            <Router>
+              <AppContent />
+            </Router>
+          </GameProvider>
         </ProgressProvider>
       </LanguageProvider>
     </ThemeProvider>

@@ -34,12 +34,14 @@ export const Header: React.FC = () => {
           onClick={() => navigate('/')}
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="w-12 h-12 green-gradient rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-lg border-2 border-white/20 group-hover:scale-110 transition-transform">
-            🇩🇿
+          <div className="w-10 h-10 sm:w-12 sm:h-12 green-gradient rounded-xl flex items-center justify-center text-white font-black text-xl sm:text-2xl shadow-lg border-2 border-white/20 group-hover:scale-110 transition-transform">
+            H
           </div>
-          <div className="hidden sm:block">
-            <h1 className="font-bold text-xl leading-tight">تكوين</h1>
-            <p className="text-[10px] opacity-70 tracking-tighter uppercase font-mono">Vocational Algeria</p>
+          <div className="flex flex-col">
+            <h1 className="font-black text-lg sm:text-xl leading-tight tracking-tighter">
+              HIRFATI <span className="text-green-primary italic">AI</span>
+            </h1>
+            <p className="text-[8px] sm:text-[10px] opacity-70 tracking-widest uppercase font-mono">Vocational Excellence</p>
           </div>
         </motion.div>
 

@@ -121,7 +121,21 @@ export const CraftDetailsModal: React.FC<CraftDetailsProps> = ({ craft, isOpen, 
                   <Download size={20} />
                   {t('modal.download')}
                 </button>
-                <button className="px-6 py-4 bg-secondary dark:bg-white/5 border border-border rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                <button 
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: craft.name,
+                        text: `اطلع على تخصص ${craft.name} عبر منصة HIRFATI AI`,
+                        url: `${window.location.origin}/craft/${craft.id}`
+                      }).catch(console.error);
+                    } else {
+                      navigator.clipboard.writeText(`${window.location.origin}/craft/${craft.id}`);
+                      alert('تم نسخ الرابط!');
+                    }
+                  }}
+                  className="px-6 py-4 bg-secondary dark:bg-white/5 border border-border rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                >
                   <Share2 size={20} />
                   {t('modal.share')}
                 </button>

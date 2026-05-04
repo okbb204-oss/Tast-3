@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Rocket, Brain, Sparkles, ChevronDown, Award, Users, BookOpen, Layers } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 
 export const Hero: React.FC = () => {
   const { t, dir } = useLanguage();
+  const navigate = useNavigate();
   const [particles, setParticles] = useState<{ id: number; left: string; top: string; size: string; duration: number }[]>([]);
 
   useEffect(() => {
@@ -87,12 +89,22 @@ export const Hero: React.FC = () => {
             transition={{ delay: 0.6 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
           >
-            <button className="w-full sm:w-auto px-10 py-5 green-gradient text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-2xl group">
+            <button 
+              onClick={() => {
+                const craftsSection = document.getElementById('crafts');
+                if (craftsSection) craftsSection.scrollIntoView({ behavior: 'smooth' });
+                else navigate('/#crafts');
+              }}
+              className="w-full sm:w-auto px-10 py-5 green-gradient text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-2xl group"
+            >
               <Rocket size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               {t('hero.cta.start')}
             </button>
 
-            <button className="w-full sm:w-auto px-10 py-5 gold-gradient text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-2xl animate-pulse-gold relative group">
+            <button 
+              onClick={() => navigate('/personality-test')}
+              className="w-full sm:w-auto px-10 py-5 gold-gradient text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-2xl animate-pulse-gold relative group"
+            >
               <Brain size={24} className="group-hover:rotate-12 transition-transform" />
               {t('hero.cta.ai')}
               <div className="absolute -top-12 left-1/2 -translate-x-1/2 p-2 bg-black/80 text-white text-[10px] rounded scale-0 group-hover:scale-100 transition-transform whitespace-nowrap">
