@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  
+  --color-neon-green: #39FF14;
+  --color-neon-blue: #00F3FF;
+  --color-dark-bg: #050505;
+  --color-glass: rgba(255, 255, 255, 0.05);
+}
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --primary: #0f172a;
+    --primary-foreground: #f8fafc;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0f172a;
+    --accent: #f1f5f9;
+    --accent-foreground: #0f172a;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #94a3b8;
+  }
+
+  .dark {
+    --background: #050505;
+    --foreground: #f8fafc;
+    --card: rgba(15, 15, 15, 0.8);
+    --card-foreground: #f8fafc;
+    --primary: #f8fafc;
+    --primary-foreground: #0f172a;
+    --secondary: #1e293b;
+    --secondary-foreground: #f8fafc;
+    --accent: #334155;
+    --accent-foreground: #f8fafc;
+    --border: #334155;
+    --input: #1e293b;
+    --ring: #cbd5e1;
+  }
+
+  body {
+    @apply font-sans antialiased transition-colors duration-500 overflow-x-hidden min-h-screen text-slate-900;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  .light {
+    background: 
+      radial-gradient(at 0% 0%, rgba(241, 245, 249, 1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(226, 232, 240, 0.5) 0px, transparent 50%),
+      #ffffff;
+    background-attachment: fixed;
+  }
+
+  .dark {
+    background: 
+      radial-gradient(at 0% 0%, rgba(2, 6, 23, 1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(15, 23, 42, 1) 0px, transparent 50%),
+      #020617;
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer utilities {
+  .theme-transitioning * {
+    @apply transition-all duration-700 ease-in-out;
+  }
+
+  .glass-card {
+    @apply backdrop-blur-xl border border-white/10;
+  }
+
+  .dark .glass-card {
+    @apply bg-black/40 border-white/5;
+  }
+
+  .light .glass-card {
+    @apply bg-white/60 border-black/5;
+  }
+
+  /* Neon Glows for Dark Mode */
+  .dark .neon-glow-green {
+    box-shadow: 0 0 15px theme('colors.neon-green'), 0 0 5px theme('colors.neon-green');
+  }
+
+  .dark .neon-glow-blue {
+    box-shadow: 0 0 15px theme('colors.neon-blue'), 0 0 5px theme('colors.neon-blue');
+  }
+
+  /* Smooth Gradients */
+  .bg-animated-mesh {
+    background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+    position: relative;
+    background-attachment: fixed;
+  }
+
+  .bg-animated-mesh::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(15, 23, 42, 0.02) 1px, transparent 1px), 
+      linear-gradient(90deg, rgba(15, 23, 42, 0.02) 1px, transparent 1px);
+    background-size: 30px 30px;
+    mask-image: radial-gradient(circle at center, black, transparent);
+    pointer-events: none;
+  }
+
+  .dark .bg-animated-mesh {
+    background: 
+      radial-gradient(at 0% 0%, rgba(15, 23, 42, 1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(2, 6, 23, 1) 0px, transparent 50%),
+      #020617;
+  }
+
+  .dark .bg-animated-mesh::before {
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), 
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .animate-shake {
+    animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+  }
+
+  @keyframes success-pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .animate-success {
+    animation: success-pop 0.4s ease-out;
+  }
+}
