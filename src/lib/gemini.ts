@@ -7,16 +7,23 @@ const ai = new GoogleGenAI({ apiKey });
 export async function generateLevelWithAI(craftName: string, levelNum: number, currentProgress?: {correct: number, wrong: number}): Promise<LevelData & {careerRecommendation: string}> {
   const progressContext = currentProgress ? `Learner Stats: ${currentProgress.correct} correct, ${currentProgress.wrong} wrong.` : 'First time learner.';
 
-  const prompt = `Act as an expert vocational instructor for '${craftName}'.
-Generate a curriculum for Level ${levelNum}.
-Structure Requirements for each lesson (Total 3 lessons):
-1. **title**: Technical and professional title.
-2. **content**: An article (min 150 words) explaining the core concept in Arabic Fusha.
-3. **summaryPoints**: 3-5 critical bullet points for summary.
-4. **tools**: exactly 3 professional tools used in this lesson.
-5. **questions**: 3 interactive questions directly based on the content above.
+  const prompt = `Act as an expert vocational instructor for '${craftName}' (Algerian Vocational Training standards).
+Generate a technical curriculum for Level ${levelNum} out of 20 levels. 
 
-Output JSON schema: { id, category, lessons: [{ id, title, content, summaryPoints, tools: [string], questions: [{ id, text, options: [{ id, text, isCorrect }], explanation }] }], scenario: { title, description, task }, careerRecommendation }`;
+CRITICAL RULES:
+1. **NO REPETITION**: This is Level ${levelNum}. Content MUST be specialized and incremental. Do NOT repeat basics from Level 1 if this is Level 10.
+2. **SHORT TECHNICAL MODULES**: Instead of broad summaries, provide "Focused Technical Lessons" (approx 100-150 words) that explain a specific procedure, tool technique, or professional secret relevant to this level.
+3. **DIRECT ASSESSMENT**: Create 3 interactive questions per lesson that measure understanding of the SPECIFIC technical details mentioned in the lesson article.
+
+Structure Requirements for each of the 3 lessons:
+- **id**: unique string.
+- **title**: High-end professional title (Arabic).
+- **content**: The specific technical lesson article (Arabic Fusha).
+- **summaryPoints**: 3-5 bullet points summarizing the lesson.
+- **tools**: 3 specific professional tools for this level.
+- **questions**: [{ id, text, options: [{ id, text, isCorrect }], explanation }]
+
+Output JSON: { id: ${levelNum}, category, lessons: [...], scenario: { title, description, task }, careerRecommendation }`;
 
   try {
     const response = await ai.models.generateContent({

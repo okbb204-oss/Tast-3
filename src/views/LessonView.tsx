@@ -113,12 +113,12 @@ export const LessonView: React.FC = () => {
         <aside className="space-y-8">
            <div className="sticky top-24 space-y-8">
               <div className="luxury-card p-10 rounded-[3rem] shadow-xl space-y-8 bg-green-primary/5 border-green-primary/20">
-                 <h3 className="text-xl font-black text-right">خلاصة الدرس</h3>
+                 <h3 className="text-xl font-black text-right">أهم المكتسبات</h3>
                  <ul className="space-y-4">
-                    {( (lesson as any).summaryPoints || ["إتقان المبادئ الأساسية للمهنة", "تطبيق معايير السلامة العالمية", "فهم السياق المهني للعمل"] ).map((point: string, idx: number) => (
-                      <li key={idx} className="flex items-start gap-3 text-right justify-end">
-                        <span className="text-sm font-bold opacity-60 leading-relaxed">{point}</span>
-                        <div className="mt-2 w-2 h-2 rounded-full bg-green-primary shrink-0" />
+                    {( (lesson as any).summaryPoints || ["إتقان التقنيات المهنية النوعية", "تطبيق معايير الجودة العالمية", "التمكن من الأدوات التخصصية"] ).map((point: string, idx: number) => (
+                      <li key={idx} className="flex items-start gap-4 text-right justify-end group">
+                        <span className="text-sm font-bold opacity-60 leading-relaxed group-hover:opacity-100 transition-opacity">{point}</span>
+                        <div className="mt-2 w-2 h-2 rounded-full bg-green-primary shrink-0 shadow-[0_0_10px_rgba(0,180,100,0.5)]" />
                       </li>
                     ))}
                  </ul>
