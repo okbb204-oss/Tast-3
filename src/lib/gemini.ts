@@ -7,12 +7,16 @@ const ai = new GoogleGenAI({ apiKey });
 export async function generateLevelWithAI(craftName: string, levelNum: number, currentProgress?: {correct: number, wrong: number}): Promise<LevelData & {careerRecommendation: string}> {
   const progressContext = currentProgress ? `Learner Stats: ${currentProgress.correct} correct, ${currentProgress.wrong} wrong.` : 'First time learner.';
 
-  const prompt = `Act as an expert instructor for '${craftName}'.
+  const prompt = `Act as an expert vocational instructor for '${craftName}'.
 Generate a curriculum for Level ${levelNum}.
-Lessons: 3.
-Questions per lesson: 3.
-Arabic language only.
-Output JSON schema: { id, category: "Beginner" | "Explorer" | "Skilled" | "Expert", lessons: [{ title, content, tools: [string], visualPrompt, questions: [{ id, text, options: [{ id, text, isCorrect }], explanation }], realWorldContext }], scenario: { title, description, task }, careerRecommendation }`;
+Structure Requirements for each lesson (Total 3 lessons):
+1. **title**: Technical and professional title.
+2. **content**: An article (min 150 words) explaining the core concept in Arabic Fusha.
+3. **summaryPoints**: 3-5 critical bullet points for summary.
+4. **tools**: exactly 3 professional tools used in this lesson.
+5. **questions**: 3 interactive questions directly based on the content above.
+
+Output JSON schema: { id, category, lessons: [{ id, title, content, summaryPoints, tools: [string], questions: [{ id, text, options: [{ id, text, isCorrect }], explanation }] }], scenario: { title, description, task }, careerRecommendation }`;
 
   try {
     const response = await ai.models.generateContent({
@@ -49,7 +53,8 @@ Return JSON:
       {
         "id": "1",
         "title": "Lesson 1 (Technical Title)",
-        "content": "Professional pedagogical content (Arabic Fusha)",
+        "content": "Professional pedagogical article (min 150 words) (Arabic Fusha)",
+        "summaryPoints": ["Key point 1", "Key point 2", "Key point 3"],
         "tools": ["Tool 1", "Tool 2", "Tool 3"],
         "visualPrompt": "Detailed technical schematic description",
         "questions": [

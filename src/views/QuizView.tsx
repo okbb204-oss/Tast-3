@@ -54,40 +54,41 @@ export const QuizView: React.FC = () => {
   const handleOptionSelect = (index: number) => {
     if (isAnswered) return;
     setSelectedOption(index);
-  };
+    setIsAnswered(true);
 
-  const handleNext = () => {
-    const isCorrect = currentQuestion.options[selectedOption!].isCorrect;
+    const isCorrect = rawQuestions[currentQuestionIndex].options[index].isCorrect;
     if (isCorrect) setScore(s => s + 1);
 
-    if (currentQuestionIndex < rawQuestions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
-      setSelectedOption(null);
-      setIsAnswered(false);
-    } else {
-      // Finalize
-      const finalScore = score + (isCorrect ? 1 : 0);
-      const isPassed = finalScore >= Math.ceil(rawQuestions.length * 0.7); // 70% to pass
-      
-      completeLesson(craftId!, levelNumber, lessonId!, {
-        completed: isPassed,
-        score: `${finalScore}/${rawQuestions.length}`,
-        date: new Date().toLocaleDateString('ar-DZ'),
-        timeSpent: '5min',
-        rating: 5
-      });
-
-      if (isPassed) {
-        confetti({
-          particleCount: 150,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#006233', '#C9A84C', '#FFFFFF']
+    // Auto-advance after 1.5 seconds
+    setTimeout(() => {
+      if (currentQuestionIndex < rawQuestions.length - 1) {
+        setCurrentQuestionIndex(prev => prev + 1);
+        setSelectedOption(null);
+        setIsAnswered(false);
+      } else {
+        // Finalize
+        const finalScore = score + (isCorrect ? 1 : 0);
+        const isPassed = finalScore >= Math.ceil(rawQuestions.length * 0.7);
+        
+        completeLesson(craftId!, levelNumber, lessonId!, {
+          completed: isPassed,
+          score: `${finalScore}/${rawQuestions.length}`,
+          date: new Date().toLocaleDateString('ar-DZ'),
+          timeSpent: '5min',
+          rating: 5
         });
-      }
 
-      setShowResults(true);
-    }
+        if (isPassed) {
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#006233', '#C9A84C', '#FFFFFF']
+          });
+        }
+        setShowResults(true);
+      }
+    }, 1500);
   };
 
   const resetQuiz = () => {
@@ -177,74 +178,70 @@ export const QuizView: React.FC = () => {
            key={currentQuestionIndex}
            initial={{ opacity: 0, x: 20 }}
            animate={{ opacity: 1, x: 0 }}
-           className="text-2xl md:text-3xl font-bold leading-relaxed text-right"
+           className="text-2xl md:text-4xl font-black leading-tight text-right tracking-tight"
          >
             {questionText}
          </motion.h2>
 
          <div className="grid gap-4">
-            {currentQuestion.options.map((option: any, index: number) => (
-              <motion.button
-                key={index}
-                whileHover={{ scale: isAnswered ? 1 : 1.02 }}
-                whileTap={{ scale: isAnswered ? 1 : 0.98 }}
-                onClick={() => handleOptionSelect(index)}
-                className={`p-6 rounded-2xl border-2 text-right transition-all flex items-center justify-between gap-4 ${
-                  selectedOption === index 
-                    ? (isAnswered ? (option.isCorrect ? 'border-green-primary bg-green-primary/5' : 'border-red-500 bg-red-50/10') : 'border-green-primary')
-                    : (isAnswered && option.isCorrect ? 'border-green-primary bg-green-primary/5' : 'border-border bg-card hover:bg-secondary/50')
-                }`}
-              >
-                 <span className="text-lg font-bold">{option.text}</span>
-                 {isAnswered && (
-                   option.isCorrect ? <Check className="text-green-primary" /> : (selectedOption === index ? <X className="text-red-500" /> : null)
-                 )}
-                 {!isAnswered && (
-                   <div className={`w-6 h-6 rounded-full border-2 ${selectedOption === index ? 'border-green-primary bg-green-primary' : 'border-border'}`} />
-                 )}
-              </motion.button>
-            ))}
+            {currentQuestion.options.map((option: any, index: number) => {
+               const isSelected = selectedOption === index;
+               const isCorrect = option.isCorrect;
+               
+               let variantClass = "bg-white dark:bg-dark-card border-border hover:border-green-primary";
+               if (isAnswered) {
+                  if (isSelected) {
+                     variantClass = isCorrect ? "bg-green-primary/10 border-green-primary" : "bg-red-500/10 border-red-500";
+                  } else if (isCorrect) {
+                     variantClass = "bg-green-primary/10 border-green-primary";
+                  }
+               }
+
+               return (
+                  <motion.button
+                    key={index}
+                    whileHover={!isAnswered ? { scale: 1.02 } : {}}
+                    whileTap={!isAnswered ? { scale: 0.98 } : {}}
+                    onClick={() => handleOptionSelect(index)}
+                    disabled={isAnswered}
+                    className={`p-6 rounded-[2rem] border-2 text-right transition-all flex items-center justify-between gap-4 font-bold text-lg ${variantClass}`}
+                  >
+                     <div className="flex items-center gap-3">
+                        {isAnswered && (
+                           isCorrect ? <Check size={20} className="text-green-primary font-bold" /> : (isSelected ? <X size={20} className="text-red-500" /> : null)
+                        )}
+                        {!isAnswered && (
+                           <div className={`w-6 h-6 rounded-full border-2 ${selectedOption === index ? 'border-green-primary bg-green-primary' : 'border-border'}`} />
+                        )}
+                     </div>
+                     <span className="flex-1">{option.text}</span>
+                  </motion.button>
+               );
+            })}
          </div>
       </div>
 
-      {/* Bottom Action */}
-      <div className="pt-8">
-         <button 
-           disabled={selectedOption === null || isAnswered}
-           onClick={() => setIsAnswered(true)}
-           className={`w-full py-5 rounded-2xl font-bold text-xl transition-all shadow-lg ${
-             selectedOption === null || isAnswered 
-               ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none' 
-               : 'green-gradient text-white hover:scale-[1.02]'
-           }`}
-         >
-            تأكيد الإجابة
-         </button>
-         
-         <AnimatePresence>
-           {isAnswered && (
-             <motion.div
-               initial={{ opacity: 0, y: 10 }}
-               animate={{ opacity: 1, y: 0 }}
-               className="mt-6 space-y-6"
-             >
-                <div className={`p-6 rounded-2xl flex gap-4 ${currentQuestion.options[selectedOption!].isCorrect ? 'bg-green-primary/10 border border-green-primary/20' : 'bg-red-500/10 border border-red-500/20'}`}>
-                   <div className="shrink-0 p-2 bg-white dark:bg-white/10 rounded-xl">
-                      {currentQuestion.options[selectedOption!].isCorrect ? <Star className="text-green-primary" /> : <X className="text-red-500" />}
-                   </div>
-                   <p className="text-sm leading-relaxed">{feedbackText}</p>
-                </div>
-
-                <button 
-                  onClick={handleNext}
-                  className="w-full btn-primary py-5 text-xl bg-[#004d26]"
-                >
-                   {currentQuestionIndex < rawQuestions.length - 1 ? 'السؤال التالي' : 'عرض النتائج'}
-                </button>
-             </motion.div>
-           )}
-         </AnimatePresence>
-      </div>
+      {/* Feedback Section */}
+      <AnimatePresence>
+         {isAnswered && (
+           <motion.div
+             initial={{ opacity: 0, y: 10 }}
+             animate={{ opacity: 1, y: 0 }}
+             exit={{ opacity: 0, y: -10 }}
+             className="pt-8"
+           >
+              <div className={`p-8 rounded-[2.5rem] luxury-card flex gap-4 ${currentQuestion.options[selectedOption!].isCorrect ? 'bg-green-primary/5 text-green-primary' : 'bg-red-500/5 text-red-500'}`}>
+                 <div className="shrink-0 p-3 bg-white dark:bg-white/10 rounded-2xl shadow-sm">
+                    {currentQuestion.options[selectedOption!].isCorrect ? <Star size={24} /> : <X size={24} />}
+                 </div>
+                 <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">التفسير المهني</p>
+                    <p className="text-sm font-medium leading-[1.8]">{feedbackText}</p>
+                 </div>
+              </div>
+           </motion.div>
+         )}
+      </AnimatePresence>
     </div>
   );
 };

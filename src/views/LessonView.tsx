@@ -52,101 +52,98 @@ export const LessonView: React.FC = () => {
   const illDesc = (lesson as any).illustrationDesc || (lesson as any).visualPrompt;
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl space-y-10">
-      {/* Breadcrumbs */}
-      <nav className="flex items-center gap-2 text-sm opacity-60">
-        <button onClick={() => navigate('/')} className="hover:text-green-primary">الرئيسية</button>
-        <ChevronRight size={14} />
-        <button onClick={() => navigate(`/craft/${craftId}`)} className="hover:text-green-primary">التخصص</button>
-        <ChevronRight size={14} />
-        <button onClick={() => navigate(`/craft/${craftId}/level/${levelId}`)} className="hover:text-green-primary">المستوى {levelId}</button>
-        <ChevronRight size={14} />
-        <span className="font-bold text-green-primary">{lesson.title}</span>
-      </nav>
-
-      {/* Header Card */}
+    <div className="container mx-auto px-4 py-12 max-w-5xl space-y-16">
+      {/* Dynamic HeaderSection */}
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden p-8 md:p-12 green-gradient text-white rounded-[2.5rem] shadow-2xl"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="relative p-12 md:p-20 bg-slate-900 text-white rounded-[4rem] overflow-hidden shadow-2xl"
       >
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-green-primary opacity-20 blur-[120px] rounded-full -mr-48 -mt-48" />
         
-        <div className="relative space-y-6">
-          <div className="flex items-center gap-4">
-             <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl">
-                {record.completed ? '✅' : '📖'}
-             </div>
-             <div className="space-y-1">
-                <span className="text-xs font-bold uppercase tracking-widest opacity-80">الدرس {lessonId}</span>
-                <h1 className="text-3xl md:text-5xl font-bold mb-0">{lesson.title}</h1>
-             </div>
-          </div>
-          
-          <div className="flex flex-wrap gap-6 text-sm font-bold opacity-90">
-             <span className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full"><Clock size={16} /> 15 دقيقة</span>
-             <span className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full"><BookOpen size={16} /> محتوى نظري + الصور</span>
-             {record.completed && <span className="flex items-center gap-2 bg-[#00FF87]/20 text-[#00FF87] px-4 py-2 rounded-full border border-[#00FF87]/30">مكتمل بجدارة</span>}
-          </div>
+        <div className="relative flex flex-col md:flex-row items-center gap-12 text-center md:text-right">
+           <div className="w-32 h-32 bg-white/10 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 flex items-center justify-center text-6xl shadow-inner">
+              {record.completed ? '✅' : '🌟'}
+           </div>
+           <div className="flex-1 space-y-4">
+              <div className="flex items-center justify-center md:justify-end gap-3 text-xs font-black uppercase tracking-[0.3em] opacity-40">
+                 Lesson {lessonId} • Level {levelId}
+              </div>
+              <h1 className="text-4xl md:text-7xl font-black mb-2 tracking-tighter uppercase leading-[0.9]">
+                 {lesson.title}
+              </h1>
+              <div className="flex flex-wrap items-center justify-center md:justify-end gap-6 text-[10px] font-black uppercase tracking-widest pt-4">
+                 <span className="flex items-center gap-2 bg-white/5 px-6 py-2 rounded-full border border-white/10"><Clock size={16} /> 15 MIN ESTIMATE</span>
+                 <span className="flex items-center gap-2 bg-white/5 px-6 py-2 rounded-full border border-white/10"><BookOpen size={16} /> ACADEMIC CONTENT</span>
+                 {record.completed && <span className="bg-green-primary text-white px-6 py-2 rounded-full shadow-lg">CERTIFIED LEVEL COMPLETED</span>}
+              </div>
+           </div>
         </div>
       </motion.div>
 
       {/* Content Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-        <div className="md:col-span-2 space-y-8">
-           <section className="space-y-4">
-              <h2 className="text-2xl font-bold flex items-center gap-3">
-                 <div className="w-2 h-8 bg-green-primary rounded-full" />
-                 ملخص الدرس
+        <div className="md:col-span-2 space-y-12">
+           <section className="space-y-6">
+              <h2 className="text-3xl font-black flex items-center gap-4 text-right justify-end grayscale opacity-50">
+                 المفهوم الأساسي
+                 <div className="w-1.5 h-1.5 bg-green-primary rounded-full" />
               </h2>
-              <div className="prose prose-lg dark:prose-invert max-w-none bg-secondary/30 dark:bg-white/5 p-8 rounded-3xl border border-border/50 text-justify leading-relaxed whitespace-pre-wrap">
-                 {lesson.summary}
+              <div className="prose prose-xl dark:prose-invert max-w-none luxury-card p-10 md:p-14 rounded-[3rem] text-right leading-relaxed font-medium">
+                 {lesson.content || lesson.summary}
               </div>
            </section>
 
-           <section className="space-y-4">
-              <h2 className="text-2xl font-bold flex items-center gap-3">
-                 <div className="w-2 h-8 bg-blue-500 rounded-full" />
-                 التوضيح المرئي
+           <section className="space-y-6">
+              <h2 className="text-3xl font-black flex items-center gap-4 text-right justify-end grayscale opacity-50">
+                 التوضيح التقني
+                 <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
               </h2>
-              <div className="relative group overflow-hidden rounded-3xl border-4 border-white dark:border-dark-border shadow-xl aspect-video bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-center p-12">
-                 <div className="space-y-4">
-                    <AlertCircle size={48} className="mx-auto opacity-30" />
-                    <p className="text-sm opacity-60 font-medium italic">{(lesson as any).illustrationDesc || "توضيح فني للمهارة الجاري تعلمها"}</p>
+              <div className="relative group overflow-hidden rounded-[3rem] border-4 border-white dark:border-white/5 shadow-2xl aspect-video bg-slate-100 dark:bg-white/5 flex items-center justify-center text-center p-12">
+                 <div className="space-y-4 max-w-sm">
+                    <Sparkles size={48} className="mx-auto opacity-10 animate-pulse" />
+                    <p className="text-sm opacity-40 font-bold italic">{(lesson as any).illustrationDesc || (lesson as any).visualPrompt || "Technical schematic placeholder"}</p>
                  </div>
-                 {/* In a real app, this would be an actual image or 3D model */}
               </div>
            </section>
         </div>
 
         {/* Sidebar Actions */}
-        <aside className="space-y-6">
-           <div className="sticky top-24 space-y-6">
-              <div className="p-6 bg-card border border-border rounded-3xl shadow-sm space-y-6">
-                 <h3 className="text-lg font-bold">جاهز للاختبار؟</h3>
-                 <p className="text-sm opacity-60">تحتاج للإجابة بشكل صحيح على 3 أسئلة لتجاوز هذا الدرس.</p>
+        <aside className="space-y-8">
+           <div className="sticky top-24 space-y-8">
+              <div className="luxury-card p-10 rounded-[3rem] shadow-xl space-y-8 bg-green-primary/5 border-green-primary/20">
+                 <h3 className="text-xl font-black text-right">خلاصة الدرس</h3>
+                 <ul className="space-y-4">
+                    {( (lesson as any).summaryPoints || ["إتقان المبادئ الأساسية للمهنة", "تطبيق معايير السلامة العالمية", "فهم السياق المهني للعمل"] ).map((point: string, idx: number) => (
+                      <li key={idx} className="flex items-start gap-3 text-right justify-end">
+                        <span className="text-sm font-bold opacity-60 leading-relaxed">{point}</span>
+                        <div className="mt-2 w-2 h-2 rounded-full bg-green-primary shrink-0" />
+                      </li>
+                    ))}
+                 </ul>
                  
-                 <button 
-                   onClick={() => navigate(`/craft/${craftId}/level/${levelId}/lesson/${lessonId}/quiz`)}
-                   className="w-full btn-primary py-5 text-xl"
-                 >
-                    <Play fill="currentColor" size={24} />
-                    {record.completed ? 'إعادة الاختبار' : 'بدء الاختبار'}
-                 </button>
-
-                 {record.completed && (
-                   <div className="pt-4 border-t border-border flex items-center justify-between text-xs font-bold opacity-60">
-                      <span>آخر محاولة: {record.date}</span>
-                      <span>الدرجة: {record.score}</span>
-                   </div>
-                 )}
+                 <div className="pt-8 border-t border-green-primary/10">
+                   <button 
+                     onClick={() => navigate(`/craft/${craftId}/level/${levelId}/lesson/${lessonId}/quiz`)}
+                     className="w-full green-gradient py-6 rounded-[2rem] text-white font-black text-xl shadow-[0_20px_40px_rgba(0,180,100,0.3)] hover:scale-[1.03] active:scale-95 transition-all"
+                   >
+                      {record.completed ? 'إعادة التقييم' : 'بدء التقييم'}
+                   </button>
+                 </div>
               </div>
 
-              <div className="p-6 bg-gold/5 border border-gold/20 rounded-3xl">
-                 <h4 className="font-bold text-gold flex items-center gap-2 mb-2">
-                    <AlertCircle size={16} /> نصيحة من الوزارة
+              <div className="luxury-card p-8 rounded-[2.5rem] bg-slate-100 dark:bg-white/5">
+                 <h4 className="font-black text-[10px] uppercase tracking-widest opacity-40 flex items-center gap-2 mb-4 justify-end">
+                    أدوات المهنة <Clock size={14} />
                  </h4>
-                 <p className="text-xs leading-relaxed opacity-70">ركز جيدا في الصور التوضيحية، فهي تحتوي على 40% من الإجابات في الاختبار النهائي.</p>
+                 <div className="flex flex-wrap gap-2 justify-end">
+                    {lesson.tools.map((tool: any, idx: number) => (
+                      <span key={idx} className="px-4 py-2 bg-white dark:bg-white/10 rounded-xl text-xs font-black shadow-sm">
+                        {typeof tool === 'string' ? tool : tool.name}
+                      </span>
+                    ))}
+                 </div>
               </div>
            </div>
         </aside>
