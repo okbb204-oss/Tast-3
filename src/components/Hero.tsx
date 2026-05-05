@@ -69,25 +69,26 @@ export const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-5xl md:text-7xl font-bold leading-tight"
+            className="text-6xl md:text-9xl font-black leading-[0.9] tracking-tighter uppercase"
           >
-            {t('hero.title')}
+            Craft Your <br/>
+            <span className="text-green-primary">Future.</span>
           </motion.h1>
 
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-xl md:text-2xl opacity-80"
+            className="text-lg md:text-xl opacity-40 max-w-2xl mx-auto leading-relaxed"
           >
-            {t('hero.subtitle')}
+            حلل مسارك المهني وابدأ رحلة التعلم الرقمي بأحدث التقنيات العالمية.
           </motion.p>
 
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-12"
           >
             <button 
               onClick={() => {
@@ -95,46 +96,20 @@ export const Hero: React.FC = () => {
                 if (craftsSection) craftsSection.scrollIntoView({ behavior: 'smooth' });
                 else navigate('/#crafts');
               }}
-              className="w-full sm:w-auto px-10 py-5 green-gradient text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-2xl group"
+              className="w-full sm:w-auto px-12 py-6 bg-green-primary text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl"
             >
-              <Rocket size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              {t('hero.cta.start')}
+              Explore Crafts
             </button>
 
             <button 
               onClick={() => navigate('/personality-test')}
-              className="w-full sm:w-auto px-10 py-5 gold-gradient text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-2xl animate-pulse-gold relative group"
+              className="w-full sm:w-auto px-12 py-6 border border-white/20 hover:bg-white/5 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all text-white backdrop-blur-xl"
             >
-              <Brain size={24} className="group-hover:rotate-12 transition-transform" />
-              {t('hero.cta.ai')}
-              <div className="absolute -top-12 left-1/2 -translate-x-1/2 p-2 bg-black/80 text-white text-[10px] rounded scale-0 group-hover:scale-100 transition-transform whitespace-nowrap">
-                حلّل مساري المهني بالذكاء الاصطناعي
-              </div>
+              Intelligent Analysis
             </button>
           </motion.div>
 
-          {/* Stats Bar */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 p-6 glass-card rounded-3xl"
-          >
-            {[
-              { label: 'تخصص معتمد', value: '6', icon: <Layers size={20} className="text-green-primary" /> },
-              { label: 'درس مكتمل', value: '360', icon: <BookOpen size={20} className="text-blue-500" /> },
-              { label: 'مستوى تعليمي', value: '20', icon: <ChevronDown size={20} className="text-gold" /> },
-              { label: 'سؤال تقييمي', value: '1080', icon: <Sparkles size={20} className="text-red-accent" /> },
-            ].map((stat, i) => (
-              <div key={i} className="text-center space-y-1">
-                <div className="flex items-center justify-center gap-2 opacity-70">
-                  {stat.icon}
-                  <span className="text-xs font-bold uppercase">{stat.label}</span>
-                </div>
-                <p className="text-3xl font-bold text-green-primary dark:text-green-light">{stat.value}</p>
-              </div>
-            ))}
-          </motion.div>
+
         </div>
       </div>
 

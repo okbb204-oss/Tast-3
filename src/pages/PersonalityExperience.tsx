@@ -29,7 +29,7 @@ export default function PersonalityExperience() {
   const navigate = useNavigate();
   const { setPersonalityResult } = useGame();
   const { t } = useLanguage();
-  const { setLevelProgress } = useProgress();
+  const { setCurrentCraft } = useProgress();
   
   const [step, setStep] = useState<'intro' | 'info' | 'interests' | 'questions' | 'calculating' | 'result'>('intro');
   const [formData, setFormData] = useState<AssessmentData>({
@@ -351,7 +351,7 @@ export default function PersonalityExperience() {
                          </p>
                          <div className="flex flex-wrap gap-2 mb-8">
                             {lesson.tools.map((tool, i) => (
-                               <span key={i} className="px-3 py-1 bg-secondary text-[10px] font-black rounded-full uppercase">{tool}</span>
+                               <span key={i} className="px-3 py-1 bg-secondary text-[10px] font-black rounded-full uppercase">{(tool as any).name || tool}</span>
                             ))}
                          </div>
                          <div className="pt-6 border-t border-border/50 flex items-center justify-between">
@@ -384,7 +384,7 @@ export default function PersonalityExperience() {
                     const craftId = craftMap[result.craft] || result.craft.toLowerCase().replace(/\s+/g, '_');
                     
                     setPersonalityResult(result.craft);
-                    setLevelProgress(craftId, 1, 1, true); 
+                    setCurrentCraft(craftId); 
                     navigate(`/craft/${craftId}`);
                   }}
                   className="px-12 py-5 green-gradient text-white rounded-2xl font-black text-xl shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4"

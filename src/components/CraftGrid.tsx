@@ -45,46 +45,33 @@ export const CraftGrid: React.FC<{ onSelect: (craft: Craft) => void }> = ({ onSe
   ];
 
   return (
-    <section id="crafts" className="py-20 bg-secondary/30">
+    <section id="crafts" className="py-32 bg-white dark:bg-slate-950">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12 space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold">{t('crafts.header')}</h2>
-          <div className="w-20 h-1 green-gradient mx-auto rounded-full" />
-        </div>
-
-        {/* Search & Filters */}
-        <div className="flex flex-col lg:flex-row gap-6 mb-12 items-center justify-between">
-          <div className="relative w-full lg:max-w-md">
-            <Search className={`absolute ${dir === 'rtl' ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-muted-foreground`} size={20} />
-            <input
-              type="text"
-              placeholder={t('crafts.search')}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-white dark:bg-dark-card border border-border rounded-2xl py-4 flex pl-12 pr-12 focus:ring-2 focus:ring-green-primary/20 outline-none transition-all shadow-sm"
-              style={{ paddingRight: dir === 'rtl' ? '3rem' : '1rem', paddingLeft: dir === 'rtl' ? '1rem' : '3rem' }}
-            />
-          </div>
-
-          <div className="flex gap-2 p-1 bg-white dark:bg-dark-card border border-border rounded-2xl overflow-x-auto scroller-hide max-w-full">
-            {filters.map((f) => (
-              <button
-                key={f.id}
-                onClick={() => setActiveFilter(f.id as any)}
-                className={`px-6 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
-                  activeFilter === f.id ? 'green-gradient text-white shadow-md' : 'hover:bg-green-primary/5'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
+        <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
+           <div className="space-y-4">
+             <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">Available <span className="text-green-primary">Crafts.</span></h2>
+             <p className="opacity-40 max-w-md font-medium">اختر تخصصك المهني وابدأ مسار الاحتراف مع أفضل المناهج التعليمية المدعمة بالذكاء الاصطناعي.</p>
+           </div>
+           
+           <div className="flex gap-4 p-2 bg-slate-100 dark:bg-white/5 rounded-2xl overflow-x-auto scroller-hide">
+              {filters.map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => setActiveFilter(f.id as any)}
+                  className={`px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                    activeFilter === f.id ? 'bg-green-primary text-slate-950 shadow-xl' : 'opacity-40 hover:opacity-100'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+           </div>
         </div>
 
         {/* Grid */}
         <motion.div 
           layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"
         >
           <AnimatePresence mode="popLayout">
             {filteredCrafts.map((craft) => (
@@ -102,86 +89,33 @@ export const CraftGrid: React.FC<{ onSelect: (craft: Craft) => void }> = ({ onSe
 };
 
 const CraftCard: React.FC<{ craft: Craft; onClick: () => void }> = ({ craft, onClick }) => {
-  const { t } = useLanguage();
-  const { getProgressForCraft } = useProgress();
-  const progress = getProgressForCraft(craft.id);
-
-  const handleShare = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (navigator.share) {
-      navigator.share({
-        title: craft.name,
-        text: `تخصص ${craft.name} في منصة التكوين المهني الجزائرية`,
-        url: window.location.href,
-      });
-    }
-  };
-
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ y: -6 }}
+      whileHover={{ y: -10 }}
       onClick={onClick}
-      className="group relative bg-white dark:bg-dark-card border border-border rounded-[2.5rem] p-8 cursor-pointer transition-all shadow-sm hover:shadow-2xl hover:border-green-primary/30 overflow-hidden"
+      className="group relative bg-slate-50 dark:bg-white/5 rounded-[3rem] p-10 cursor-pointer transition-all border border-transparent hover:border-green-primary/20 hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] overflow-hidden"
     >
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-green-primary/5 rounded-bl-[5rem] -mr-16 -mt-16 group-hover:-mr-12 group-hover:-mt-12 transition-all" />
-
-      {/* Progress Badge */}
-      {progress > 0 && (
-        <div className="absolute top-6 left-6 px-3 py-1 bg-green-light/10 text-green-light text-[10px] font-bold rounded-full border border-green-light/20 flex items-center gap-1">
-          <Star size={10} fill="currentColor" />
-          {progress}% مكتمل
+      <div className="flex items-center justify-between mb-10">
+        <div className="w-20 h-20 bg-white dark:bg-white/5 rounded-3xl flex items-center justify-center text-4xl shadow-inner group-hover:scale-110 transition-transform">
+          {craft.icon}
         </div>
-      )}
-
-      {/* Icon */}
-      <div className="w-16 h-16 bg-off-white dark:bg-white/5 rounded-2xl flex items-center justify-center text-4xl mb-6 shadow-inner">
-        {craft.icon}
-      </div>
-
-      <h3 className="text-xl font-bold mb-6 group-hover:text-green-primary transition-colors">{craft.name}</h3>
-
-      <div className="space-y-4 mb-8 text-sm opacity-80">
-        <div className="flex items-center gap-3">
-          <Clock size={16} className="text-green-primary" />
-          <span>مدة التكوين: {craft.duration}</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <GraduationCap size={16} className="text-blue-500" />
-          <span>{craft.certificate}</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <BarChart size={16} className="text-gold" />
-          <span>المستوى: {craft.level}</span>
-        </div>
-        <div className="flex items-center gap-6 pt-2 border-t border-border/50">
-          <div className="flex items-center gap-1">
-            <Star size={14} className="text-gold fill-gold" />
-            <span className="font-bold">{craft.rating}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Users size={14} className="text-muted-foreground" />
-            <span>{craft.learners} متعلم</span>
-          </div>
+        <div className="px-4 py-1.5 bg-green-primary/10 text-green-primary text-[10px] font-black rounded-full uppercase tracking-widest border border-green-primary/10">
+          {craft.level}
         </div>
       </div>
 
-      <div className="flex gap-3 mt-auto">
-        <button className="flex-1 px-4 py-3 bg-secondary dark:bg-white/5 hover:bg-green-primary hover:text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all group/btn">
-          <ExternalLink size={16} className="group-hover/btn:scale-110" />
-          تفاصيل
-        </button>
-        <button 
-          onClick={handleShare}
-          className="p-3 bg-secondary dark:bg-white/5 hover:bg-gold hover:text-white rounded-xl transition-all"
-          title="مشاركة التخصص"
-        >
-          <Share2 size={20} />
-        </button>
+      <h3 className="text-3xl font-black mb-4 uppercase tracking-tighter leading-tight">{craft.name}</h3>
+      <p className="text-xs opacity-40 font-medium uppercase tracking-[0.2em] mb-10">{craft.certificate}</p>
+
+      <div className="flex items-center justify-between pt-8 border-t border-black/5 dark:border-white/5">
+        <div className="flex items-center gap-2">
+           <Clock size={14} className="text-green-primary" />
+           <span className="text-[10px] font-black uppercase tracking-widest">{craft.duration}</span>
+        </div>
+        <div className="px-6 py-2 bg-slate-950 text-white dark:bg-white dark:text-slate-950 rounded-xl text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+          View Detail
+        </div>
       </div>
     </motion.div>
   );

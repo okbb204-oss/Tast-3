@@ -48,97 +48,90 @@ export const CraftDetailsModal: React.FC<CraftDetailsProps> = ({ craft, isOpen, 
             transition={{ type: 'spring', damping: 25, stiffness: 200, duration: 0.6 }}
             className={`fixed top-0 bottom-0 ${dir === 'rtl' ? 'left-0' : 'right-0'} w-full max-w-xl bg-background shadow-2xl z-[101] overflow-y-auto arabesque-pattern`}
           >
-            <div className="p-8 space-y-8">
+            <div className="p-12 space-y-12">
               {/* Header */}
-              <div className="flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 py-2">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 green-gradient rounded-xl flex items-center justify-center text-2xl shadow-lg">
+              <div className="flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-10 py-4">
+                <div className="flex items-center gap-6">
+                  <div className="w-20 h-20 bg-slate-100 dark:bg-white/5 rounded-[2rem] flex items-center justify-center text-4xl shadow-inner">
                     {craft.icon}
                   </div>
-                  <h2 className="text-2xl font-bold">{craft.name}</h2>
+                  <div>
+                    <h2 className="text-4xl font-black uppercase tracking-tighter">{craft.name}</h2>
+                    <p className="text-[10px] opacity-40 font-black uppercase tracking-widest">{craft.category} specialty</p>
+                  </div>
                 </div>
-                <button onClick={onClose} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors">
+                <button onClick={onClose} className="p-3 hover:bg-slate-100 dark:hover:bg-white/5 rounded-full transition-colors border border-black/5 dark:border-white/5">
                   <X size={24} />
                 </button>
               </div>
 
               {/* Banner Info */}
-              <div className="p-6 gold-gradient text-white rounded-3xl space-y-4 shadow-xl">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-bold flex items-center gap-1">
-                    <Info size={16} /> المصدر: وزارة التكوين المهني 🇩🇿
+              <div className="p-10 luxury-card rounded-[3rem] space-y-6 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 green-gradient opacity-10 rounded-bl-[5rem] -mr-16 -mt-16 group-hover:scale-110 transition-transform" />
+                <div className="flex justify-between items-center relative z-10">
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-60 flex items-center gap-2">
+                    <Info size={14} /> Official Certification
                   </span>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 text-green-primary">
                     <Star size={14} fill="currentColor" />
-                    <span className="text-sm font-bold">{craft.rating}/5</span>
+                    <span className="text-xs font-black">{craft.rating}</span>
                   </div>
                 </div>
-                <p className="text-sm opacity-90 leading-relaxed">
-                  هذا التخصص معتمد رسمياً من قبل مصالح وزارة التكوين والتعليم المهنيين بالجزائر، ويهدف لتزويد المتعلم بالمهارات التطبيقية المطلوبة في سوق العمل الوطني.
+                <p className="text-lg font-medium leading-relaxed opacity-80 relative z-10">
+                  تخصص معتمد وفق المقاييس الوطنية لوزارة التكوين والتعليم المهنيين. يمنحك هذا المسار الكفاءة اللازمة للاندماج المباشر في سوق العمل أو إطلاق مشروعك الخاص.
                 </p>
               </div>
 
               {/* Grid Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <InfoItem icon={<Clock className="text-green-primary" />} label={t('modal.duration')} value={craft.duration} />
-                <InfoItem icon={<GraduationCap className="text-blue-500" />} label={t('modal.certificate')} value={craft.certificate} />
-                <InfoItem icon={<BarChart className="text-gold" />} label={t('modal.level')} value={craft.level} />
-                <InfoItem icon={<TrendingUp className="text-green-light" />} label="نسبة التوظيف" value="85% - 90%" />
+              <div className="grid grid-cols-2 gap-6">
+                <InfoItem icon={<Clock size={16} className="text-green-primary" />} label="Training Term" value={craft.duration} />
+                <InfoItem icon={<GraduationCap size={16} className="text-green-primary" />} label="Certificate" value={craft.certificate} />
+                <InfoItem icon={<BarChart size={16} className="text-green-primary" />} label="Entry Level" value={craft.level} />
+                <InfoItem icon={<TrendingUp size={16} className="text-green-primary" />} label="Employment" value="92% Rate" />
               </div>
 
-              {/* Detailed Sections */}
-              <div className="space-y-6">
+               {/* Detailed Sections */}
+               <div className="space-y-10 py-4">
                 <DetailSection 
-                  icon={<HardHat className="text-gold" />} 
-                  title={t('modal.tools')} 
-                  content="الأدوات الأساسية تشمل المعدات التقنية، أجهزة القياس، برمجيات متخصصة (حسب التخصص)، وملابس الوقاية والأمن المهني."
+                  icon={<HardHat size={20} className="text-green-primary" />} 
+                  title="Required Assets" 
+                  content="المعدات واللوازم الضرورية لمزاولة هذا التخصص تشمل أدوات القياس الدقيقة، الملابس الوقائية، والعدة التقنية المتوافقة مع المعايير المهنية."
                 />
                 <DetailSection 
-                  icon={<Briefcase className="text-blue-600" />} 
-                  title={t('modal.jobs')} 
-                  content="يمكن للمتخرج العمل في المؤسسات العمومية والخاصة، أو إنشاء مؤسسة مصغرة خاصة (ANADE)، أو العمل بصفة حرفي حر."
-                />
-                <DetailSection 
-                  icon={<School className="text-green-primary" />} 
-                  title="المراكز المتوفرة" 
-                  content="متوفر في معظم مراكز التكوين المهني (CFPA) والمعاهد الوطنية المتخصصة (INSFP) عبر 58 ولاية."
+                  icon={<Briefcase size={20} className="text-green-primary" />} 
+                  title="Career Outlook" 
+                  content="فرص عمل واسعة في القطاع العام والخاص، بالإضافة إلى إمكانية الاستفادة من قروض دعم الشباب (ANADE) لإنشاء مؤسسة مصغرة."
                 />
               </div>
 
               {/* Actions */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-10">
+              <div className="flex flex-col gap-4 pt-12">
                 <button 
                   onClick={onStart}
-                  className="sm:col-span-2 px-8 py-5 green-gradient text-white rounded-2xl font-bold text-xl flex items-center justify-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl group"
+                  className="w-full py-7 bg-green-primary text-slate-950 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] hover:scale-[1.02] active:scale-95 transition-all shadow-2xl relative overflow-hidden group"
                 >
-                  <Rocket size={24} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  {t('modal.start')}
+                  <span className="relative z-10">Initiate Training Program</span>
+                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform" />
                 </button>
-                <button 
-                  onClick={handleDownloadPDF}
-                  className="px-6 py-4 bg-secondary dark:bg-white/5 border border-border rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-                >
-                  <Download size={20} />
-                  {t('modal.download')}
-                </button>
-                <button 
-                  onClick={() => {
-                    if (navigator.share) {
-                      navigator.share({
-                        title: craft.name,
-                        text: `اطلع على تخصص ${craft.name} عبر منصة HIRFATI AI`,
-                        url: `${window.location.origin}/craft/${craft.id}`
-                      }).catch(console.error);
-                    } else {
-                      navigator.clipboard.writeText(`${window.location.origin}/craft/${craft.id}`);
-                      alert('تم نسخ الرابط!');
-                    }
-                  }}
-                  className="px-6 py-4 bg-secondary dark:bg-white/5 border border-border rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-                >
-                  <Share2 size={20} />
-                  {t('modal.share')}
-                </button>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={handleDownloadPDF}
+                    className="py-5 border border-black/5 dark:border-white/10 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+                  >
+                    <Download size={14} /> PDF Syllabus
+                  </button>
+                  <button 
+                    onClick={() => {
+                       if (navigator.share) {
+                        navigator.share({ title: craft.name, url: window.location.href });
+                       }
+                    }}
+                    className="py-5 border border-black/5 dark:border-white/10 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+                  >
+                    <Share2 size={14} /> Share Link
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>

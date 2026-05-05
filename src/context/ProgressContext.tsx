@@ -83,23 +83,38 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const isLessonLocked = (craftId: string, levelId: number, lessonId: string): boolean => {
-    // Lesson 1 of Level 1 is always unlocked
-    if (levelId === 1 && lessonId === '1') return false;
-
     // Sequential logic: A lesson is locked if its predecessor is not COMPLETED
-    const lessonIdNum = parseInt(lessonId);
+    // Extract lesson index from ID like "1-1" -> index 1 or "1-2" -> index 2
+    const parts = lessonId.split('-');
+    const lessonIndex = parseInt(parts[parts.length - 1]);
     
-    if (lessonIdNum > 1) {
-      const prevLessonId = (lessonIdNum - 1).toString();
+    // First lesson of Level 1 is always unlocked
+    if (levelId === 1 && lessonIndex === 1) return false;
+    
+    if (lessonIndex > 1) {
+      // Find previous lesson in the SAME level
+      // Construct prevLessonId by keeping the prefix if any, or just decrementing index
+      const prevLessonId = parts.length > 1 
+        ? `${parts.slice(0, -1).join('-')}-${lessonIndex - 1}`
+        : (lessonIndex - 1).toString();
+        
       const prevKey = getLessonKey(craftId, levelId, prevLessonId);
       return progress.lessonRecords[prevKey]?.status !== 'completed';
     }
 
     // If it's Lesson 1 of Level > 1, check if the LAST lesson of the PREVIOUS level is done
-    if (lessonIdNum === 1 && levelId > 1) {
+    if (lessonIndex === 1 && levelId > 1) {
       const prevLevelId = levelId - 1;
-      const lastLessonOfPrevLevel = '3'; // Assuming 3 lessons per level
+      // We assume 3 lessons per level as per the user requirement
+      const lastLessonOfPrevLevel = `${prevLevelId}-3`; 
       const prevLevelKey = getLessonKey(craftId, prevLevelId, lastLessonOfPrevLevel);
+      
+      // Fallback: if "1-3" doesn't exist, try "3"
+      if (!progress.lessonRecords[prevLevelKey]) {
+        const altPrevKey = getLessonKey(craftId, prevLevelId, '3');
+        return progress.lessonRecords[altPrevKey]?.status !== 'completed';
+      }
+      
       return progress.lessonRecords[prevLevelKey]?.status !== 'completed';
     }
 

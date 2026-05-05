@@ -8,9 +8,6 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { CraftGrid } from './components/CraftGrid';
 import { CraftDetailsModal } from './components/CraftDetailsModal';
-import { Onboarding } from './components/Onboarding';
-import { Chatbot } from './components/Chatbot';
-import { Leaderboard } from './components/Leaderboard';
 import { CraftView } from './views/CraftView';
 import { LevelView } from './views/LevelView';
 import { LessonView } from './views/LessonView';
@@ -38,7 +35,6 @@ const LandingPage: React.FC = () => {
     <>
       <Hero />
       <CraftGrid onSelect={handleSelectCraft} />
-      <Leaderboard />
       <CraftDetailsModal 
         isOpen={isModalOpen} 
         craft={selectedCraft} 
@@ -65,24 +61,10 @@ const AppContent: React.FC = () => {
   }, []);
 
   return (
-    <div className={`min-h-screen bg-background text-foreground selection:bg-green-primary/30 antialiased ${dir === 'rtl' ? 'font-sans' : 'font-mono'}`}>
+    <div className={`min-h-screen bg-background text-foreground selection:bg-green-primary/30 antialiased font-sans`}>
       <Header />
       
-      <AnimatePresence>
-        {isOffline && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="bg-red-accent text-white p-2 flex items-center justify-center gap-2 z-[70] sticky top-20"
-          >
-            <WifiOff size={16} />
-            <span className="text-xs font-bold">أنت غير متصل — تعمل المنصة بوضع عدم الاتصال</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <main className="pb-20">
+      <main className="pb-10">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/personality-test" element={<PersonalityExperience />} />
@@ -94,52 +76,18 @@ const AppContent: React.FC = () => {
         </Routes>
       </main>
 
-      <footer className="bg-secondary/50 dark:bg-dark-card border-t border-border py-20 arabesque-pattern">
-        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 text-right">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 justify-end">
-              <span className="font-bold text-xl uppercase tracking-wider">تكوين</span>
-              <div className="w-10 h-10 green-gradient rounded-lg flex items-center justify-center text-white font-bold text-xl">🇩🇿</div>
-            </div>
-            <p className="text-sm opacity-60 leading-relaxed">
-              المنصة الرسمية للتكوين المهني في الجزائر. نوفر تعليماً مهنياً رقمياً عالي الجودة لتمكين الشباب من دخول سوق العمل.
-            </p>
+      <footer className="bg-slate-950 text-white py-12 border-t border-white/10">
+        <div className="container mx-auto px-4 text-center space-y-6">
+          <div className="flex items-center justify-center gap-3">
+             <div className="w-8 h-8 rounded bg-green-primary" />
+             <span className="font-black text-2xl tracking-tighter uppercase">HIRFATI</span>
           </div>
-          
-          <div>
-            <h4 className="font-bold mb-6">روابط سريعة</h4>
-            <ul className="space-y-3 text-sm opacity-70">
-              <li><a href="#" className="hover:text-green-primary">الأسئلة الشائعة</a></li>
-              <li><a href="#" className="hover:text-green-primary">شروط الاستخدام</a></li>
-              <li><a href="#" className="hover:text-green-primary">سياسة الخصوصية</a></li>
-              <li><a href="#" className="hover:text-green-primary">تحميل المناهج</a></li>
-            </ul>
+          <p className="opacity-40 text-sm max-w-md mx-auto">المنصة الذكية للتوجيه المهني والاحترافي. تم تطويرها لخدمة الشباب الجزائري الطموح.</p>
+          <div className="pt-8 border-t border-white/5 text-[10px] opacity-20 uppercase tracking-[0.2em]">
+            © {new Date().getFullYear()} Ministry of Vocational Training - Algeria
           </div>
-
-          <div>
-            <h4 className="font-bold mb-6">اتصل بنا</h4>
-            <ul className="space-y-3 text-sm opacity-70">
-              <li>📧 info@mfep.gov.dz</li>
-              <li>📞 021 XXX XXX</li>
-              <li>📍 شارع بن مهيدي، الجزائر العاصمة</li>
-            </ul>
-          </div>
-
-          <div>
-            <h1 className="font-bold mb-6">المصدر</h1>
-            <p className="text-xs opacity-50 italic">المصدر: وزارة التكوين المهني 🇩🇿</p>
-            <div className="mt-4 flex gap-4 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all justify-end">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-xs text-black font-bold">MFEP</div>
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-xs text-black font-bold">INSFP</div>
-            </div>
-          </div>
-        </div>
-        <div className="container mx-auto px-4 mt-20 pt-8 border-t border-border/10 text-center text-xs opacity-40">
-          © {new Date().getFullYear()} منصة حرفتي — جميع الحقوق محفوظة لوزارة التكوين والتعليم المهنيين
         </div>
       </footer>
-
-      <Onboarding />
     </div>
   );
 };

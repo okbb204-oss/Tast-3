@@ -1,174 +1,45 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Cairo", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Cairo", sans-serif;
-  --font-mono: "Montserrat", ui-monospace, SFMono-Regular, monospace;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   
   --color-green-primary: #006233;
-  --color-green-light: #00A86B;
-  --color-red-accent: #D21034;
-  --color-gold: #C9A84C;
-  --color-gold-light: #E8C96D;
-  --color-off-white: #F8FAF9;
-  --color-secondary: var(--secondary);
-  --color-background: var(--background);
-  --color-card: var(--card);
-  --color-border: var(--border);
-  
-  --color-dark-bg: #0A1628;
-  --color-dark-card: #112240;
-  --color-dark-border: #1E3A5F;
-  --color-dark-text: #CCD6F6;
-  --color-dark-accent: #00FF87;
+  --color-green-light: #00843D;
+  --color-gold: #C5A059;
+  --color-dark-bg: #0A0A0A;
+  --color-dark-card: #141414;
 }
 
 @layer base {
-  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Montserrat:wght@400;600;700&display=swap');
-
-  :root {
-    --background: #FFFFFF;
-    --foreground: #1A1A2E;
-    --card: #FFFFFF;
-    --card-foreground: #1A1A2E;
-    --primary: #006233;
-    --primary-foreground: #FFFFFF;
-    --secondary: #F8FAF9;
-    --secondary-foreground: #006233;
-    --accent: #D21034;
-    --accent-foreground: #FFFFFF;
-    --border: #E2E8F0;
-    --input: #E2E8F0;
-    --ring: #00A86B;
-
-    /* Spacing System (8px grid) */
-    --spacing-xs: 8px;
-    --spacing-sm: 16px;
-    --spacing-md: 24px;
-    --spacing-lg: 32px;
-    --spacing-xl: 48px;
-    --spacing-xxl: 64px;
-  }
-
-  .dark {
-    --background: #0A1628;
-    --foreground: #CCD6F6;
-    --card: #112240;
-    --card-foreground: #CCD6F6;
-    --primary: #006233; /* Keep primary consistent for brand */
-    --primary-foreground: #FFFFFF;
-    --secondary: #162C4E;
-    --secondary-foreground: #00FF87;
-    --accent: #D21034;
-    --accent-foreground: #FFFFFF;
-    --border: #1E3A5F;
-    --input: #112240;
-    --ring: #006233;
-  }
-
   body {
-    @apply font-sans antialiased transition-colors duration-500 overflow-x-hidden min-h-screen leading-[1.9];
-    background-color: var(--background);
-    color: var(--foreground);
-    direction: var(--direction, rtl);
-  }
-
-  h1 { @apply text-4xl md:text-[2.8rem] font-bold leading-tight mb-4; }
-  h2 { @apply text-3xl md:text-[2rem] font-bold leading-tight mb-3; }
-  h3 { @apply text-2xl md:text-[1.5rem] font-semibold leading-tight mb-2; }
-  p { @apply text-[1.05rem] font-normal; }
-  small { @apply text-[0.85rem] font-normal; }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight;
+    @apply bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white transition-colors duration-500 selection:bg-green-primary/30 antialiased;
   }
 }
 
-@layer utilities {
-  .gold-gradient {
-    @apply bg-gradient-to-r from-[#C9A84C] to-[#E8C96D];
+@layer components {
+  .luxury-card {
+    @apply bg-white dark:bg-white/5 backdrop-blur-3xl border border-black/5 dark:border-white/10 shadow-2xl;
   }
-
+  
   .green-gradient {
-    @apply bg-gradient-to-r from-[#006233] to-[#00A86B];
+    @apply bg-gradient-to-br from-[#006233] to-[#00843D];
   }
 
-  /* Button System */
-  .btn-primary {
-    @apply bg-green-primary text-white font-bold py-4 px-8 rounded-xl
-    transition-all duration-400 active:scale-[0.95]
-    hover:bg-[#004d26] hover:-translate-y-1 shadow-[0_12px_24px_-8px_rgba(0,98,51,0.5)]
-    flex items-center justify-center gap-2;
+  .gold-gradient {
+    @apply bg-gradient-to-br from-[#C5A059] to-[#8E6F3E];
   }
+}
 
-  .btn-secondary {
-    @apply bg-secondary text-green-primary font-bold py-4 px-8 rounded-xl
-    transition-all duration-400 hover:bg-border active:scale-[0.95]
-    shadow-[0_8px_16px_-4px_rgba(0,0,0,0.1)] flex items-center justify-center gap-2;
-  }
+.arabesque-pattern {
+  background-image: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.03) 1px, transparent 0);
+  background-size: 32px 32px;
+}
 
-  .btn-danger-retry {
-    @apply border-2 border-red-accent text-red-accent font-bold py-3.5 px-8 rounded-xl
-    transition-all duration-400 hover:bg-red-accent hover:text-white
-    active:scale-[0.95] flex items-center justify-center gap-2 animate-pulse;
-  }
+.dark .arabesque-pattern {
+  background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0);
+}
 
-  .btn-gold {
-    @apply bg-gradient-to-r from-[#C9A84C] to-[#E8C96D] text-white font-bold py-4 px-10 rounded-2xl
-    transition-all duration-400 hover:scale-[1.05] hover:-translate-y-1
-    shadow-[0_20px_40px_-10px_rgba(201,168,76,0.4)] flex items-center justify-center gap-2;
-  }
-
-  @keyframes bounce-x {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(-5px); }
-  }
-
-  .animate-bounce-x {
-    animation: bounce-x 1s infinite;
-  }
-
-  .rtl .animate-bounce-x {
-    @keyframes bounce-x-rtl {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(5px); }
-    }
-    animation: bounce-x-rtl 1s infinite;
-  }
-
-  .glass-card {
-    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl;
-  }
-
-  .dark .glass-card {
-    @apply bg-white/5 border-white/10;
-    box-shadow: 0 0 20px rgba(0, 255, 135, 0.1);
-  }
-
-  .arabesque-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l5 15h15l-12 9 5 15-13-10-13 10 5-15-12-9h15z' fill='%23006233' fill-opacity='0.05'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-  }
-
-  .dark .arabesque-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l5 15h15l-12 9 5 15-13-10-13 10 5-15-12-9h15z' fill='%2300FF87' fill-opacity='0.03'/%3E%3C/svg%3E");
-  }
-
-  .dark .green-gradient {
-    @apply bg-gradient-to-r from-[#0A1628] to-[#112240];
-  }
-
-  .neon-glow {
-    box-shadow: 0 0 20px rgba(0, 255, 135, 0.3);
-  }
-
-  @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.4); }
-    70% { box-shadow: 0 0 0 15px rgba(201, 168, 76, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(201, 168, 76, 0); }
-  }
-
-  .animate-pulse-gold {
-    animation: pulse 2s infinite;
-  }
+.glass-card {
+  @apply bg-white/10 dark:bg-black/20 backdrop-blur-3xl border border-white/10 shadow-2xl;
 }

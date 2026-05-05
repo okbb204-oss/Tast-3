@@ -1,100 +1,25 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { LevelData } from "../data/craftsData";
 
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : '');
-const ai = new GoogleGenAI({ apiKey: apiKey || "" });
+const apiKey = process.env.GEMINI_API_KEY || "";
+const ai = new GoogleGenAI({ apiKey });
 
 export async function generateLevelWithAI(craftName: string, levelNum: number, currentProgress?: {correct: number, wrong: number}): Promise<LevelData & {careerRecommendation: string}> {
-  const progressContext = currentProgress ? `Learner Stats: ${currentProgress.correct} correct, ${currentProgress.wrong} wrong. If they are excelling, push them with advanced terminology. If struggling, provide more foundational analogies.` : 'First time learner for this craft.';
+  const progressContext = currentProgress ? `Learner Stats: ${currentProgress.correct} correct, ${currentProgress.wrong} wrong.` : 'First time learner.';
 
-  const prompt = `Act as an Autonomous Vocational Training System (Senior Instructor) for '${craftName}'.
-Generate a comprehensive, high-level professional training module for Level ${levelNum} (Advanced technical curriculum).
-
-Vocational Pedagogical Guidelines:
-- TONE: Professional, instructional, direct. No childish metaphors.
-- CONTENT: 100% focused on professional standards, technical codes (e.g., ISO, NF, IEEE), and current job market requirements.
-- HSE: Every lesson must mention a safety protocol or standard operating procedure (SOP).
-- LANGUAGE: Advanced professional Arabic (Standard/Technical hybrid). Use precise industry-specific terminology.
-
-Structure Requirements:
-1. LESSONS: EXACTLY 3 specialized lessons.
-2. CONTENT: Structured with clear terminology and real-world application.
-3. TOOLS: Each lesson MUST list exactly 3 professional-grade tools. Format: 'Brand/Type - Technical Purpose (Usage Scenario)'.
-4. VISUALS: 'visualPrompt' MUST be a high-fidelity description for generating a technical schematic or onsite photo.
-5. QUIZ: 3 high-stakes multiple-choice questions per lesson (9 total). Focus on decision-making and troubleshooting.
-6. PRACTICAL SCENARIO: A "Critical Job Simulation" where the user must apply the lesson's core principle.
-7. CAREER RECOMMENDATION: Advice on certification or specialized job roles related to this specific level.
-
-Adaptive Context: ${progressContext}
-
-Output MUST be valid JSON matching the schema.`;
+  const prompt = `Act as an expert instructor for '${craftName}'.
+Generate a curriculum for Level ${levelNum}.
+Lessons: 3.
+Questions per lesson: 3.
+Arabic language only.
+Output JSON schema: { id, category: "Beginner" | "Explorer" | "Skilled" | "Expert", lessons: [{ title, content, tools: [string], visualPrompt, questions: [{ id, text, options: [{ id, text, isCorrect }], explanation }], realWorldContext }], scenario: { title, description, task }, careerRecommendation }`;
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.0-flash",
       contents: prompt,
       config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            id: { type: Type.NUMBER },
-            category: { type: Type.STRING, enum: ["Beginner", "Explorer", "Skilled", "Expert"] },
-            lessons: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  title: { type: Type.STRING },
-                  content: { type: Type.STRING },
-                  tools: { 
-                    type: Type.ARRAY, 
-                    items: { type: Type.STRING },
-                    description: "List of 3 tools: 'Name - Description (Example)'"
-                  },
-                  visualPrompt: { type: Type.STRING },
-                  questions: {
-                    type: Type.ARRAY,
-                    items: {
-                      type: Type.OBJECT,
-                      properties: {
-                        id: { type: Type.STRING },
-                        text: { type: Type.STRING },
-                        options: {
-                          type: Type.ARRAY,
-                          items: {
-                            type: Type.OBJECT,
-                            properties: {
-                              id: { type: Type.STRING },
-                              text: { type: Type.STRING },
-                              isCorrect: { type: Type.BOOLEAN }
-                            },
-                            required: ["id", "text", "isCorrect"]
-                          }
-                        },
-                        explanation: { type: Type.STRING }
-                      },
-                      required: ["id", "text", "options", "explanation"]
-                    }
-                  },
-                  realWorldContext: { type: Type.STRING }
-                },
-                required: ["title", "content", "tools", "visualPrompt", "questions", "realWorldContext"]
-              }
-            },
-            scenario: {
-              type: Type.OBJECT,
-              properties: {
-                title: { type: Type.STRING },
-                description: { type: Type.STRING },
-                task: { type: Type.STRING }
-              },
-              required: ["title", "description", "task"]
-            },
-            careerRecommendation: { type: Type.STRING }
-          },
-          required: ["id", "category", "lessons", "scenario", "careerRecommendation"]
-        }
+        responseMimeType: "application/json"
       }
     });
 
@@ -106,50 +31,36 @@ Output MUST be valid JSON matching the schema.`;
 }
 
 export async function analyzePersonality(userData: any): Promise<{ craft: string; reason: string; curriculumSample: LevelData }> {
-  const prompt = `Act as an expert vocational training consultant for the "Hirfati" platform.
-Analyze the following user data and recommend the most suitable craft/trade for them.
+  const prompt = `Predict the best vocational craft for this candidate.
+User: Age ${userData.age}, Gender ${userData.gender}, Education ${userData.education}, Interests: ${userData.interests}, Skills: ${userData.skills}.
+Psychometric Answers: ${JSON.stringify(userData.answers)}.
 
-User Data:
-- Age: ${userData.age}
-- Gender: ${userData.gender}
-- Education: ${userData.education}
-- Interests: ${userData.interests}
-- Skills/Background: ${userData.skills}
-- Psychometric Responses: ${JSON.stringify(userData.answers)}
-
-Requirements:
-1. Recommend 1 specific craft (e.g., Tailoring, Carpentry, Phone Repair, Pastry, etc.).
-2. Provide a detailed professional reason for this choice based on their psychometric profile.
-3. Generate a sample for "Level 1" of the curriculum for this craft.
-   - Level 1 must have EXACTLY 3 lessons.
-   - Each lesson must have EXACTLY 3 multiple-choice questions.
-
-Output MUST be valid JSON matching the following schema:
+Return JSON:
 {
-  "craft": "Craft Name in Arabic",
-  "reason": "Clear explanation in Arabic",
+  "craft": "Craft Name (Arabic)",
+  "reason": "Detailed professional reason (Arabic)",
   "curriculumSample": {
     "id": 1,
     "category": "Beginner",
     "lessons": [
       {
-        "title": "Lesson Title",
-        "content": "Lesson Content",
+        "title": "Lesson 1",
+        "content": "Professional content (Arabic)",
         "tools": ["Tool 1", "Tool 2", "Tool 3"],
-        "visualPrompt": "Description",
+        "visualPrompt": "Technical schematic description",
         "questions": [
-           { "id": "1", "text": "Q", "options": [{"id": "a", "text": "A", "isCorrect": true}, ...], "explanation": "E" }
+           { "id": "1", "text": "Q", "options": [{"id": "a", "text": "A", "isCorrect": true}, {"id": "b", "text": "B", "isCorrect": false}], "explanation": "E" }
         ],
-        "realWorldContext": "Context"
+        "realWorldContext": "Workplace application"
       }
     ],
-    "scenario": { "title": "T", "description": "D", "task": "Task" }
+    "scenario": { "title": "Job Case", "description": "Desc", "task": "Task" }
   }
 }`;
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.0-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json"
