@@ -105,6 +105,64 @@ Output MUST be valid JSON matching the schema.`;
   }
 }
 
+export async function analyzePersonality(userData: any): Promise<{ craft: string; reason: string; curriculumSample: LevelData }> {
+  const prompt = `Act as an expert vocational training consultant for the "Hirfati" platform.
+Analyze the following user data and recommend the most suitable craft/trade for them.
+
+User Data:
+- Age: ${userData.age}
+- Gender: ${userData.gender}
+- Education: ${userData.education}
+- Interests: ${userData.interests}
+- Skills/Background: ${userData.skills}
+- Psychometric Responses: ${JSON.stringify(userData.answers)}
+
+Requirements:
+1. Recommend 1 specific craft (e.g., Tailoring, Carpentry, Phone Repair, Pastry, etc.).
+2. Provide a detailed professional reason for this choice based on their psychometric profile.
+3. Generate a sample for "Level 1" of the curriculum for this craft.
+   - Level 1 must have EXACTLY 3 lessons.
+   - Each lesson must have EXACTLY 3 multiple-choice questions.
+
+Output MUST be valid JSON matching the following schema:
+{
+  "craft": "Craft Name in Arabic",
+  "reason": "Clear explanation in Arabic",
+  "curriculumSample": {
+    "id": 1,
+    "category": "Beginner",
+    "lessons": [
+      {
+        "title": "Lesson Title",
+        "content": "Lesson Content",
+        "tools": ["Tool 1", "Tool 2", "Tool 3"],
+        "visualPrompt": "Description",
+        "questions": [
+           { "id": "1", "text": "Q", "options": [{"id": "a", "text": "A", "isCorrect": true}, ...], "explanation": "E" }
+        ],
+        "realWorldContext": "Context"
+      }
+    ],
+    "scenario": { "title": "T", "description": "D", "task": "Task" }
+  }
+}`;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json"
+      }
+    });
+
+    return JSON.parse(response.text || "{}");
+  } catch (error) {
+    console.error("AI Analysis Error:", error);
+    throw error;
+  }
+}
+
 export async function generateVisualAid(prompt: string): Promise<string> {
   try {
     const response = await ai.models.generateContent({
