@@ -24,12 +24,19 @@ const curricula: Record<string, any[]> = {
 export const QuizView: React.FC = () => {
   const { craftId, levelId, lessonId } = useParams<{ craftId: string; levelId: string; lessonId: string }>();
   const navigate = useNavigate();
-  const { completeLesson } = useProgress();
+  const { completeLesson, progress } = useProgress();
   const { t } = useLanguage();
 
   const levelNumber = parseInt(levelId || '1');
-  const levelData = curricula[craftId || '']?.find(l => l.id === levelNumber);
-  const lesson = levelData?.lessons.find((l: any) => l.id === lessonId);
+  const key = `craft_${craftId}_level_${levelId}`;
+
+  // Resolve level data
+  let levelData = curricula[craftId || '']?.find(l => l.id === levelNumber);
+  if (!levelData && progress.aiCurricula[key]) {
+    levelData = progress.aiCurricula[key];
+  }
+
+  const lesson = levelData?.lessons.find((l: any) => l.id.toString() === lessonId?.toString());
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -37,9 +44,12 @@ export const QuizView: React.FC = () => {
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
 
-  if (!lesson || !lesson.quiz) return <div className="p-20 text-center">الاختبار غير متوفر</div>;
+  const rawQuestions = lesson?.quiz || lesson?.questions || [];
+  if (!lesson || rawQuestions.length === 0) return <div className="p-20 text-center">الاختبار غير متوفر</div>;
 
-  const currentQuestion = lesson.quiz[currentQuestionIndex];
+  const currentQuestion = rawQuestions[currentQuestionIndex];
+  const questionText = currentQuestion.question || currentQuestion.text;
+  const feedbackText = currentQuestion.feedback || currentQuestion.explanation;
 
   const handleOptionSelect = (index: number) => {
     if (isAnswered) return;
@@ -50,18 +60,18 @@ export const QuizView: React.FC = () => {
     const isCorrect = currentQuestion.options[selectedOption!].isCorrect;
     if (isCorrect) setScore(s => s + 1);
 
-    if (currentQuestionIndex < lesson.quiz.length - 1) {
+    if (currentQuestionIndex < rawQuestions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
       setSelectedOption(null);
       setIsAnswered(false);
     } else {
       // Finalize
       const finalScore = score + (isCorrect ? 1 : 0);
-      const isPassed = finalScore === lesson.quiz.length;
+      const isPassed = finalScore >= Math.ceil(rawQuestions.length * 0.7); // 70% to pass
       
       completeLesson(craftId!, levelNumber, lessonId!, {
         completed: isPassed,
-        score: `${finalScore}/${lesson.quiz.length}`,
+        score: `${finalScore}/${rawQuestions.length}`,
         date: new Date().toLocaleDateString('ar-DZ'),
         timeSpent: '5min',
         rating: 5
@@ -111,7 +121,7 @@ export const QuizView: React.FC = () => {
 
             <div className="p-8 bg-secondary/50 rounded-3xl border border-border">
                <div className="text-sm font-bold opacity-50 uppercase mb-2">النتيجة النهائية</div>
-               <div className={`text-6xl font-black ${isPassed ? 'text-green-primary' : 'text-orange-500'}`}>{score}/{lesson.quiz.length}</div>
+               <div className={`text-6xl font-black ${isPassed ? 'text-green-primary' : 'text-orange-500'}`}>{score}/{rawQuestions.length}</div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -145,10 +155,10 @@ export const QuizView: React.FC = () => {
          </button>
          <div className="text-center">
             <div className="text-xs font-bold opacity-40 uppercase">اختبار الدرس</div>
-            <div className="font-bold">سؤال {currentQuestionIndex + 1} من {lesson.quiz.length}</div>
+            <div className="font-bold">سؤال {currentQuestionIndex + 1} من {rawQuestions.length}</div>
          </div>
          <div className="w-12 h-12 bg-green-primary/10 text-green-primary rounded-xl flex items-center justify-center font-bold">
-            {score}/{lesson.quiz.length}
+            {score}/{rawQuestions.length}
          </div>
       </div>
 
@@ -156,7 +166,7 @@ export const QuizView: React.FC = () => {
       <div className="h-2 bg-secondary rounded-full overflow-hidden">
          <motion.div 
            initial={{ width: 0 }}
-           animate={{ width: `${((currentQuestionIndex + 1) / lesson.quiz.length) * 100}%` }}
+           animate={{ width: `${((currentQuestionIndex + 1) / rawQuestions.length) * 100}%` }}
            className="h-full green-gradient"
          />
       </div>
@@ -169,7 +179,7 @@ export const QuizView: React.FC = () => {
            animate={{ opacity: 1, x: 0 }}
            className="text-2xl md:text-3xl font-bold leading-relaxed text-right"
          >
-            {currentQuestion.question}
+            {questionText}
          </motion.h2>
 
          <div className="grid gap-4">
@@ -222,14 +232,14 @@ export const QuizView: React.FC = () => {
                    <div className="shrink-0 p-2 bg-white dark:bg-white/10 rounded-xl">
                       {currentQuestion.options[selectedOption!].isCorrect ? <Star className="text-green-primary" /> : <X className="text-red-500" />}
                    </div>
-                   <p className="text-sm leading-relaxed">{currentQuestion.feedback}</p>
+                   <p className="text-sm leading-relaxed">{feedbackText}</p>
                 </div>
 
                 <button 
                   onClick={handleNext}
                   className="w-full btn-primary py-5 text-xl bg-[#004d26]"
                 >
-                   {currentQuestionIndex < lesson.quiz.length - 1 ? 'السؤال التالي' : 'عرض النتائج'}
+                   {currentQuestionIndex < rawQuestions.length - 1 ? 'السؤال التالي' : 'عرض النتائج'}
                 </button>
              </motion.div>
            )}

@@ -21,18 +21,63 @@ const curricula: Record<string, any[]> = {
   ms_access: msAccessBeginner
 };
 
+import { generateLevelOnServer } from '../services/aiService';
+
 export const LevelView: React.FC = () => {
   const { craftId, levelId } = useParams<{ craftId: string; levelId: string }>();
   const navigate = useNavigate();
-  const { getLessonRecord } = useProgress();
+  const { getLessonRecord, progress, saveAiLevel } = useProgress();
   const { t } = useLanguage();
+  const [isGenerating, setIsGenerating] = React.useState(false);
 
   const levelNumber = parseInt(levelId || '1');
-  const levelData = curricula[craftId || '']?.find(l => l.id === levelNumber);
+  const key = `craft_${craftId}_level_${levelId}`;
+  
+  // 1. Check static
+  let levelData = curricula[craftId || '']?.find(l => l.id === levelNumber);
+  
+  // 2. Check dynamic store
+  if (!levelData && progress.aiCurricula[key]) {
+    levelData = progress.aiCurricula[key];
+  }
 
-  if (!levelData) return <div className="p-20 text-center font-bold text-2xl">المستوى غير موجود</div>;
+  // Effect to trigger generation if missing
+  React.useEffect(() => {
+    if (!levelData && craftId && !isGenerating) {
+      const triggerGen = async () => {
+        setIsGenerating(true);
+        try {
+          const fetched = await generateLevelOnServer(craftId, levelNumber);
+          saveAiLevel(craftId, levelNumber, fetched);
+        } catch (err) {
+          console.error("Failed to generate level:", err);
+        } finally {
+          setIsGenerating(false);
+        }
+      };
+      triggerGen();
+    }
+  }, [levelData, craftId, levelNumber, isGenerating, saveAiLevel]);
 
-  const allCompleted = levelData.lessons.every((l: any) => getLessonRecord(craftId!, levelNumber, l.id).completed);
+  if (isGenerating || !levelData) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center space-y-8 bg-slate-50 dark:bg-slate-950">
+        <div className="relative">
+          <div className="w-24 h-24 border-4 border-green-primary border-t-transparent rounded-full animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-xl">✨</span>
+          </div>
+        </div>
+        <div className="text-center space-y-2">
+          <h2 className="text-3xl font-black uppercase tracking-tighter">AI Curriculum Generation</h2>
+          <p className="opacity-40 font-medium">يقوم الذكاء الاصطناعي ببناء محتوى المستوى {levelId} خصيصاً لك...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const allLessons = levelData.lessons || [];
+  const allCompleted = allLessons.length > 0 && allLessons.every((l: any) => getLessonRecord(craftId!, levelNumber, l.id).completed);
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-5xl space-y-12">

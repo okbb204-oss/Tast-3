@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Rocket, Brain, Sparkles, ChevronDown, Award, Users, BookOpen, Layers } from 'lucide-react';
+import { Rocket, Brain, Sparkles, ChevronDown, Award, Users, BookOpen, Layers, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -69,19 +69,20 @@ export const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-6xl md:text-9xl font-black leading-[0.9] tracking-tighter uppercase"
+            className="text-7xl md:text-[8rem] font-black leading-[0.85] tracking-tighter uppercase"
           >
-            Craft Your <br/>
-            <span className="text-green-primary">Future.</span>
+            HIRFATI <br/>
+            <span className="text-green-primary">EXPERTISE.</span>
           </motion.h1>
 
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-lg md:text-xl opacity-40 max-w-2xl mx-auto leading-relaxed"
+            className="text-xl md:text-2xl font-medium opacity-60 max-w-2xl mx-auto leading-relaxed"
           >
-            حلل مسارك المهني وابدأ رحلة التعلم الرقمي بأحدث التقنيات العالمية.
+            نظام التوجيه المهني الأكثر تطوراً في الجزائر. <br/>
+            باشر رحلة احترافك الآن مع مناهج تدريبية معتمدة ومدعومة بالذكاء الاصطناعي.
           </motion.p>
 
           <motion.div 
@@ -91,21 +92,24 @@ export const Hero: React.FC = () => {
             className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-12"
           >
             <button 
+              onClick={() => navigate('/personality-test')}
+              className="w-full sm:w-auto px-12 py-6 green-gradient text-slate-950 rounded-[1.5rem] font-black text-lg shadow-[0_20px_50px_rgba(0,180,100,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-4 group"
+            >
+              <span>ابدأ التحليل الذكي</span>
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                <ChevronRight size={18} />
+              </div>
+            </button>
+
+            <button 
               onClick={() => {
                 const craftsSection = document.getElementById('crafts');
                 if (craftsSection) craftsSection.scrollIntoView({ behavior: 'smooth' });
                 else navigate('/#crafts');
               }}
-              className="w-full sm:w-auto px-12 py-6 bg-green-primary text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl"
+              className="w-full sm:w-auto px-12 py-6 border-2 border-white/10 hover:bg-white/5 rounded-[1.5rem] font-black text-lg transition-all text-white backdrop-blur-xl"
             >
-              Explore Crafts
-            </button>
-
-            <button 
-              onClick={() => navigate('/personality-test')}
-              className="w-full sm:w-auto px-12 py-6 border border-white/20 hover:bg-white/5 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 active:scale-95 transition-all text-white backdrop-blur-xl"
-            >
-              Intelligent Analysis
+              استعرض الحرف
             </button>
           </motion.div>
 

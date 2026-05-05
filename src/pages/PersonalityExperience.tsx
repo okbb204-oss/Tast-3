@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useGame } from '../contexts/GameContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useProgress } from '../context/ProgressContext';
-import { analyzePersonality } from '../lib/gemini';
-import { Sparkles, ArrowLeft, Loader2, Brain, Star, Send, User, BookOpen, Heart, Activity, CheckCircle, ChevronRight, Trophy } from 'lucide-react';
+import { analyzePersonalityOnServer } from '../services/aiService';
+import { Sparkles, ArrowLeft, Loader2, Brain, Star, Send, User, BookOpen, Heart, Activity, CheckCircle, ChevronRight, Trophy, TrendingUp, HandMetal, ShieldCheck } from 'lucide-react';
 import { LevelData } from '../data/craftsData';
 
 type AssessmentData = {
@@ -42,7 +42,7 @@ export default function PersonalityExperience() {
   });
   const [qIndex, setQIndex] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ craft: string; reason: string; curriculumSample: LevelData } | null>(null);
+  const [result, setResult] = useState<{ craft: string; reason: string; traits: string[]; potentialSalary: string; curriculumSample: LevelData } | null>(null);
 
   const updateFormData = (key: keyof AssessmentData, value: string) => {
     setFormData(prev => ({ ...prev, [key]: value }));
@@ -63,12 +63,12 @@ export default function PersonalityExperience() {
     setStep('calculating');
     setLoading(true);
     try {
-      const data = await analyzePersonality({ ...formData, answers: finalAnswers });
-      setResult(data);
+      const data = await analyzePersonalityOnServer({ ...formData, answers: finalAnswers });
+      setResult(data as any);
       setStep('result');
     } catch (error) {
       console.error(error);
-      alert("حدث خطأ أثناء التحليل. يرجى المحاولة مرة أخرى.");
+      alert("حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى التأكد من توفر الإنترنت والمحاولة مرة أخرى.");
       setStep('intro');
     } finally {
       setLoading(false);
@@ -317,10 +317,31 @@ export default function PersonalityExperience() {
                         {result.craft}
                       </h1>
                       <div className="p-8 bg-slate-50 dark:bg-white/5 rounded-3xl border border-border/30">
-                         <h3 className="text-xl font-black mb-3">لماذا اخترنا لك هذه الحرفة؟</h3>
-                         <p className="text-muted-foreground text-lg font-medium leading-relaxed">
+                         <h3 className="text-xl font-black mb-3 text-right">لماذا اخترنا لك هذه الحرفة؟</h3>
+                         <p className="text-muted-foreground text-lg font-medium leading-relaxed text-right">
                            {result.reason}
                          </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                         <div className="p-4 bg-green-primary text-white rounded-2xl flex items-center gap-4">
+                            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                               <TrendingUp />
+                            </div>
+                            <div className="text-right">
+                               <p className="text-[10px] font-black uppercase opacity-60">الدخل المتوقع</p>
+                               <p className="font-bold">{result.potentialSalary}</p>
+                            </div>
+                         </div>
+                         <div className="p-4 bg-slate-100 dark:bg-white/10 rounded-2xl flex items-center gap-4">
+                            <div className="w-12 h-12 bg-green-primary/10 text-green-primary rounded-xl flex items-center justify-center">
+                               <HandMetal />
+                            </div>
+                            <div className="text-right">
+                               <p className="text-[10px] font-black uppercase opacity-40">أهم السمات المطلوبة</p>
+                               <p className="font-bold">{result.traits?.join(' • ')}</p>
+                            </div>
+                         </div>
                       </div>
                    </div>
                 </div>

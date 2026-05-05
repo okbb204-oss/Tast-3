@@ -32,14 +32,17 @@ export const Header: React.FC = () => {
           onClick={() => navigate('/')}
           className="flex items-center gap-4 cursor-pointer group"
         >
-          <div className="w-12 h-12 green-gradient rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-xl transition-transform group-hover:rotate-12">
-            H
+          <div className="relative">
+            <div className="w-14 h-14 green-gradient rounded-[1.2rem] flex items-center justify-center text-white font-black text-2xl shadow-[0_10px_30px_rgba(0,180,100,0.3)] transition-transform group-hover:rotate-[15deg] group-hover:scale-110">
+              H
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gold rounded-full border-2 border-white dark:border-slate-950" />
           </div>
           <div className="flex flex-col">
             <h1 className="font-black text-2xl leading-none tracking-tighter uppercase whitespace-nowrap">
               HIRFATI <span className="text-green-primary">AI</span>
             </h1>
-            <p className="text-[10px] opacity-40 tracking-[0.3em] uppercase font-mono mt-1">Vocational Intelligence</p>
+            <p className="text-[9px] opacity-40 tracking-[0.4em] uppercase font-mono mt-1 font-bold">Vocational Intelligence</p>
           </div>
         </motion.div>
 

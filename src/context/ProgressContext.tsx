@@ -12,6 +12,7 @@ export interface LessonRecord {
 interface ProgressData {
   currentCraftId: string | null;
   lessonRecords: Record<string, LessonRecord>; // key: craft_${craftId}_level_${levelId}_lesson_${lessonId}
+  aiCurricula: Record<string, any>; // key: craft_${craftId}_level_${levelId}
   overallProgress: number;
 }
 
@@ -22,6 +23,7 @@ interface ProgressContextType {
   getLessonRecord: (craftId: string, levelId: number, lessonId: string) => LessonRecord;
   getProgressForCraft: (craftId: string) => number;
   isLessonLocked: (craftId: string, levelId: number, lessonId: string) => boolean;
+  saveAiLevel: (craftId: string, levelId: number, data: any) => void;
 }
 
 const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
@@ -33,6 +35,7 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return {
       currentCraftId: null,
       lessonRecords: {},
+      aiCurricula: {},
       overallProgress: 0,
     };
   });
@@ -40,6 +43,17 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     localStorage.setItem('learner_progress', JSON.stringify(progress));
   }, [progress]);
+
+  const saveAiLevel = (craftId: string, levelId: number, data: any) => {
+    const key = `craft_${craftId}_level_${levelId}`;
+    setProgress(prev => ({
+      ...prev,
+      aiCurricula: {
+        ...prev.aiCurricula,
+        [key]: data
+      }
+    }));
+  };
 
   const getLessonKey = (craftId: string, levelId: number, lessonId: string) => 
     `craft_${craftId}_level_${levelId}_lesson_${lessonId}`;
@@ -138,7 +152,8 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setCurrentCraft, 
       getProgressForCraft, 
       getLessonRecord, 
-      isLessonLocked 
+      isLessonLocked,
+      saveAiLevel
     }}>
       {children}
     </ProgressContext.Provider>

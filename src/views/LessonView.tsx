@@ -23,15 +23,33 @@ const curricula: Record<string, any[]> = {
 export const LessonView: React.FC = () => {
   const { craftId, levelId, lessonId } = useParams<{ craftId: string; levelId: string; lessonId: string }>();
   const navigate = useNavigate();
-  const { getLessonRecord } = useProgress();
+  const { getLessonRecord, progress } = useProgress();
   const { t } = useLanguage();
 
   const levelNumber = parseInt(levelId || '1');
-  const levelData = curricula[craftId || '']?.find(l => l.id === levelNumber);
-  const lesson = levelData?.lessons.find((l: any) => l.id === lessonId);
+  const key = `craft_${craftId}_level_${levelId}`;
+
+  // Resolve level data
+  let levelData = curricula[craftId || '']?.find(l => l.id === levelNumber);
+  if (!levelData && progress.aiCurricula[key]) {
+    levelData = progress.aiCurricula[key];
+  }
+
+  const lesson = levelData?.lessons.find((l: any) => l.id.toString() === lessonId?.toString());
   const record = getLessonRecord(craftId!, levelNumber, lessonId!);
 
-  if (!lesson) return <div className="p-20 text-center">الدرس غير موجود</div>;
+  if (!lesson) return (
+    <div className="min-h-screen flex items-center justify-center">
+       <div className="text-center space-y-4">
+          <AlertCircle size={48} className="mx-auto opacity-20" />
+          <h2 className="text-2xl font-black">الدرس غير متوفر</h2>
+          <button onClick={() => navigate(-1)} className="px-6 py-2 bg-green-primary text-white rounded-xl font-bold">العودة</button>
+       </div>
+    </div>
+  );
+
+  const content = lesson.summary || lesson.content;
+  const illDesc = (lesson as any).illustrationDesc || (lesson as any).visualPrompt;
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl space-y-10">

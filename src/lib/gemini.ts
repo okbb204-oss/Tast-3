@@ -30,31 +30,35 @@ Output JSON schema: { id, category: "Beginner" | "Explorer" | "Skilled" | "Exper
   }
 }
 
-export async function analyzePersonality(userData: any): Promise<{ craft: string; reason: string; curriculumSample: LevelData }> {
-  const prompt = `Predict the best vocational craft for this candidate.
+export async function analyzePersonality(userData: any): Promise<{ craft: string; reason: string; traits: string[]; potentialSalary: string; curriculumSample: LevelData }> {
+  const prompt = `Act as a vocational orientation expert for the Ministry of Vocational Training in Algeria.
+Predict the best vocational craft for this candidate.
 User: Age ${userData.age}, Gender ${userData.gender}, Education ${userData.education}, Interests: ${userData.interests}, Skills: ${userData.skills}.
 Psychometric Answers: ${JSON.stringify(userData.answers)}.
 
 Return JSON:
 {
   "craft": "Craft Name (Arabic)",
-  "reason": "Detailed professional reason (Arabic)",
+  "reason": "Comprehensive professional reason (Arabic Fusha)",
+  "traits": ["Trait 1", "Trait 2", "Trait 3"],
+  "potentialSalary": "Salary range in DZD (Arabic)",
   "curriculumSample": {
     "id": 1,
     "category": "Beginner",
     "lessons": [
       {
-        "title": "Lesson 1",
-        "content": "Professional content (Arabic)",
+        "id": "1",
+        "title": "Lesson 1 (Technical Title)",
+        "content": "Professional pedagogical content (Arabic Fusha)",
         "tools": ["Tool 1", "Tool 2", "Tool 3"],
-        "visualPrompt": "Technical schematic description",
+        "visualPrompt": "Detailed technical schematic description",
         "questions": [
-           { "id": "1", "text": "Q", "options": [{"id": "a", "text": "A", "isCorrect": true}, {"id": "b", "text": "B", "isCorrect": false}], "explanation": "E" }
+           { "id": "1", "text": "Technical Q", "options": [{"id": "a", "text": "A", "isCorrect": true}, {"id": "b", "text": "B", "isCorrect": false}], "explanation": "Why A is correct" }
         ],
-        "realWorldContext": "Workplace application"
+        "realWorldContext": "Official workplace application"
       }
     ],
-    "scenario": { "title": "Job Case", "description": "Desc", "task": "Task" }
+    "scenario": { "title": "Critical Job Scenario", "description": "Desc", "task": "Task" }
   }
 }`;
 
